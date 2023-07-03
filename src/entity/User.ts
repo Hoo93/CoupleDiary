@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
-import { BaseEntity } from "./BaseEntity";
+import { EssentialEntity } from "./EssentialEntity";
 
 @Entity()
-export class User extends BaseEntity{
+export class User extends EssentialEntity{
 
     @Column()
     username:string;
