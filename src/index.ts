@@ -1,27 +1,19 @@
+import * as express from 'express'
 import { AppDataSource } from "./data-source"
 import { Request, Response } from "express"
-import * as express from 'express'
+import Container, { Inject } from 'typedi'
+import { App } from './app'
+import { UserRoutes } from './router/user.routes'
+
+
 
 // database connection
 AppDataSource
-    .initialize()
-    .then(async () => {
-        console.log("Data Source has been initialized")
-        })
-    .catch(error => console.log(error))
-
-// create and setup express app
-const app = express();
-const port = 2220;
-app.use(express.json())
-
-app.get('/',(req:Request,res:Response) => {
-    res.send('Hello World')
+.initialize()
+.then(async () => {
+    console.log("Data Source has been initialized")
 })
+.catch(error => console.log(error))
 
-// start express server
-app.listen(port, () => {
-    console.log('######################################')
-    console.log(`##### server is running on ${port} ######`)
-    console.log('######################################')
-})
+// App start
+const app = new App(2220);

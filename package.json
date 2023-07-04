@@ -12,14 +12,12 @@
    "dependencies": {
       "express": "^4.18.2",
       "reflect-metadata": "^0.1.13",
+      "typedi": "^0.10.0",
       "typeorm": "0.3.17"
    },
    "scripts": {
       "start": "ts-node src/index.ts",
+      "start:dev": "nodemon --watch src/index.ts",
       "typeorm": "typeorm-ts-node-commonjs"
    }
 }
-
-
-
-
