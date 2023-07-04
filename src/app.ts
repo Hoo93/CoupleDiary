@@ -1,18 +1,32 @@
 import * as express from 'express';
 import Container, { Inject, Service } from 'typedi';
-import { UserRoutes } from './router/UserRoutes';
 import { AppDataSource } from './data-source';
+import { useContainer, useExpressServer } from 'routing-controllers';
+import { UserController } from './controller/UserController';
 
 @Service()
 export class App {
     private app: express.Application;
-    private userRoutes:UserRoutes = Container.get(UserRoutes);
 
     constructor(port) {
         this.app = express();
+        this.initializeExpress();
         this.initializeMiddleWare();
         this.listen(port);
-        this.app.use('/',this.userRoutes.router)
+    }
+
+    private initializeExpress() {
+        try {
+            useContainer(Container);
+            useExpressServer(this.app,{
+                routePrefix:"/api",
+                controllers:[UserController],
+                middlewares:[`${__dirname}/middleware/*.ts`]
+            });
+        } catch (error) {
+            console.log(error)
+        }
+        
     }
 
     private initializeMiddleWare() {
