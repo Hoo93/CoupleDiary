@@ -14,11 +14,11 @@ export class UserController {
     ) {}
 
     @Get('/signup')
-    createUser = (
+    public async createUser(
         req:express.Request,
         res:express.Response,
         next:express.NextFunction
-    ) => {
-        return this.userService.createUser(req,res,next)
+    ) {
+        return await this.userService.createUser(req,res,next)
     }
 }

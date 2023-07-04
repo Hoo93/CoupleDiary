@@ -1,6 +1,6 @@
 import { UserRoutes } from "../router/UserRoutes";
 import { UserController } from "../controller/UserController";
-import { User } from "../entity/User";
+import { User } from "../entity/User/User";
 import { AppDataSource } from "../data-source";
 import { Repository } from "typeorm";
 import { UserService } from "../service/UserService";

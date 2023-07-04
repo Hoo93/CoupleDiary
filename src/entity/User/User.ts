@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
-import { BaseTimeEntity } from "./BaseTimeEntity";
+import { BaseTimeEntity } from "../BaseTimeEntity";
 
 @Entity()
 export class User extends BaseTimeEntity{
@@ -9,5 +9,9 @@ export class User extends BaseTimeEntity{
 
     @Column()
     password:string;
+
+    @Column()
+    nickname:string;
+
 
 }
