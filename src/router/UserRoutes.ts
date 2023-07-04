@@ -1,6 +1,6 @@
 import * as express from 'express';
 import Container, { Inject, Service } from 'typedi';
-import { UserController } from '../controller/user.controller';
+import { UserController } from '../controller/userController';
 import { In } from 'typeorm';
 import { User } from '../entity/User';
 

@@ -3,7 +3,7 @@ import { AppDataSource } from "./data-source"
 import { Request, Response } from "express"
 import Container, { Inject } from 'typedi'
 import { App } from './app'
-import { UserRoutes } from './router/user.routes'
+import { UserRoutes } from './router/UserRoutes'
 
 
 

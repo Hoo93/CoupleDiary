@@ -1,6 +1,6 @@
 import * as express from 'express';
 import Container, { Inject, Service } from 'typedi';
-import { UserRoutes } from './router/user.routes';
+import { UserRoutes } from './router/UserRoutes';
 import { AppDataSource } from './data-source';
 
 @Service()
