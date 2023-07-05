@@ -1,6 +1,8 @@
 import Container, { Service } from 'typedi';
 import { useContainer, useExpressServer } from 'routing-controllers';
-import { UserController } from './controller/UserController';
+import { useContainer as rcUseContainer } from 'routing-controllers';
+import { useContainer as typeOrmUseContainer } from 'routing-controllers';
+import { UserController } from './User/UserController';
 import { loggerMiddleWare } from './middleware/logger';
 import { Application } from 'express';
 import express = require('express')
@@ -19,6 +21,8 @@ export class App {
     private initializeExpress() {
         try {
             useContainer(Container);
+            rcUseContainer(Container);
+            typeOrmUseContainer(Container);
             useExpressServer(this.app,{
                 routePrefix:"/api",
                 controllers:[UserController],
