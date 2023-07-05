@@ -7,11 +7,5 @@ export class UserRepository {
     constructor(
         private userRepository = AppDataSource.getRepository(User)
     ) {}
-
-    async createUser(){
-        const result = await 'Ang';
-        return result
-    }
-
     
 }

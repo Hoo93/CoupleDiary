@@ -1,12 +1,13 @@
-import * as express from 'express';
-import Container, { Inject, Service } from 'typedi';
-import { AppDataSource } from './data-source';
+import Container, { Service } from 'typedi';
 import { useContainer, useExpressServer } from 'routing-controllers';
 import { UserController } from './controller/UserController';
+import { loggerMiddleWare } from './middleware/logger';
+import { Application } from 'express';
+import express = require('express')
 
 @Service()
 export class App {
-    private app: express.Application;
+    private app: Application;
 
     constructor(port) {
         this.app = express();
@@ -42,16 +43,4 @@ export class App {
             console.log('######################################')
         })
     }
-}
-
-
-
-
-
-// start express server
-
-
-export function loggerMiddleWare(req:express.Request,res:express.Response,next:express.NextFunction) {
-    console.log(`${req.method} ${req.path}` )
-    next();
 }
