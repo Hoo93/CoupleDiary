@@ -16,12 +16,12 @@ export class UserService {
         const findName = await UserRepository.findOneBy({name:user.name})
         const findNickname = await UserRepository.findOneBy({nickname:user.nickname})
         
-        // if (findName) {
-        //     throw new BadRequestError(`name with ${user.name} already exist`)
-        // }
-        // if (findNickname) {
-        //     throw new BadRequestError(`name with ${user.nickname} already exist`)
-        // }
+        if (findName) {
+            throw new BadRequestError(`name with ${user.name} already exist`)
+        }
+        if (findNickname) {
+            throw new BadRequestError(`name with ${user.nickname} already exist`)
+        }
 
         try {
             const result = await UserRepository.save(createUserDto.toEntity())

@@ -2,7 +2,7 @@ import { Unique } from "typeorm"
 import { IsInt, IsNotEmpty, IsString, Min, MinLength } from "class-validator";
 import { User } from "../User";
 
-@Unique(['username','nickname'])
+
 export class CreateUserDto {
     @IsString()
     @IsNotEmpty()
