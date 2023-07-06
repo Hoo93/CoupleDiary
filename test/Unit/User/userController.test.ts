@@ -20,18 +20,16 @@ describe("User Controller Test", () => {
     })
 
     it('should haveCalledWith a userService', () => {
-        // const stubService:UserService = mock(UserService);
         const userController:UserController = new UserController(userService);
-        // when(stubRepository)
         const createUserDto:CreateUserDto = {
             name:"test name",
             nickname:"test nickname",
             password:"test password"
         }
-        userController.createUser(createUserDto)
-        expect(userService.createUser).toHaveBeenCalledWith(createUserDto)
+        req.body = createUserDto
+        userController.createUser(req.body)
+        expect(userService.createUser).toHaveBeenCalledWith(req.body)
         expect(userService.createUser).toBeCalledTimes(1)
-        
     })
 
 })
