@@ -1,5 +1,6 @@
 import { Unique } from "typeorm"
 import { IsInt, IsNotEmpty, IsString } from "class-validator";
+import { User } from "../User";
 
 @Unique(['username','nickname'])
 export class CreateUserDto {
@@ -14,4 +15,16 @@ export class CreateUserDto {
     @IsString()
     @IsNotEmpty()
     nickname:string;
+
+    public toEntity():User {
+        const now = new Date();
+        return User.signup(
+            this.name,
+            this.nickname,
+            this.password,
+            now,
+            now
+        )
+
+    }
 }

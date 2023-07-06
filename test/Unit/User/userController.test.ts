@@ -25,7 +25,7 @@ describe("User Controller Test", () => {
             name:"test name",
             nickname:"test nickname",
             password:"test password"
-        }
+        } as CreateUserDto
         req.body = createUserDto
         userController.createUser(req.body)
         expect(userService.createUser).toHaveBeenCalledWith(req.body)

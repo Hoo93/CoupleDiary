@@ -11,8 +11,8 @@ export class UserService {
     constructor() {}
 
     async createUser (createUserDto:CreateUserDto) {
-        const result = await UserRepository.save(createUserDto)
-        return result.id
-
+        const result = await UserRepository.save(createUserDto.toEntity())
+        console.log(result)
+        return result
     }
 }
