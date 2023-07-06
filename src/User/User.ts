@@ -1,7 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, Unique } from "typeorm"
 import { BaseTimeEntity } from "../entity/BaseTimeEntity";
 
 @Entity()
+@Unique(['name'])
+@Unique(['nickname'])
 export class User extends BaseTimeEntity {
 
     @Column()

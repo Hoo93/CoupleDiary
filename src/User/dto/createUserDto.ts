@@ -1,11 +1,12 @@
 import { Unique } from "typeorm"
-import { IsInt, IsNotEmpty, IsString } from "class-validator";
+import { IsInt, IsNotEmpty, IsString, Min, MinLength } from "class-validator";
 import { User } from "../User";
 
 @Unique(['username','nickname'])
 export class CreateUserDto {
     @IsString()
     @IsNotEmpty()
+    @MinLength(4,{message:'name should be longer than 4'})
     name:string;
 
     @IsString()
@@ -14,6 +15,7 @@ export class CreateUserDto {
 
     @IsString()
     @IsNotEmpty()
+    @MinLength(2,{message:'name should be longer than 2'})
     nickname:string;
 
     public toEntity():User {

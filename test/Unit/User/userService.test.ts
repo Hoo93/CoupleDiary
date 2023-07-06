@@ -30,7 +30,7 @@ describe("User Service Test", () => {
 
         const result = createUserDto.toEntity();
         expect(spyUserSignUp).toBeCalledTimes(1)
-
+        
     })
 
     it('dto.toEntity should return user',() => {
@@ -56,8 +56,6 @@ describe("User Service Test", () => {
             now
             )
             
-        UserRepository.save = jest.fn()
-
         let spiedUserRepo = spy(UserRepository);
         when(spiedUserRepo.save(user)).thenResolve(user)
         
