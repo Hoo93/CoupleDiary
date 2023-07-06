@@ -7,8 +7,8 @@ export class BaseTimeEntity {
     id:number;
 
     @Column()
-    createdAt:string;
+    createdAt:Date;
 
     @Column()
-    updatedAt:string;
+    updatedAt:Date;
 }
