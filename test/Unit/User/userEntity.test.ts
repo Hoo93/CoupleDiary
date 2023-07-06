@@ -6,7 +6,7 @@ describe('User Entity test', () => {
         const name = "test name"
         const nickname = "test name"
         const password = "test password"
-        const user = User.signup(name,password,nickname,now,now)
+        const user = User.signup(name,nickname,password,now,now)
         console.log(now)
         expect(user.createdAt).toBe(now)
         expect(user.updatedAt).toBe(now)

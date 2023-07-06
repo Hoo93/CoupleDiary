@@ -5,7 +5,7 @@ import { UserService } from "../../../src/User/UserService";
 import { UserRepository } from "../../../src/User/UserRepository";
 import { mock, when } from "ts-mockito";
 import { CreateUserDto } from "../../../src/User/dto/createUserDto";
-const newUser = require('../User/newUser')
+
 let req = httpMocks.createRequest()
 let res = httpMocks.createResponse()
 

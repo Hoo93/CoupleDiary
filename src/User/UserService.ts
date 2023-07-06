@@ -10,9 +10,8 @@ import { ConnectionCheckOutFailedEvent, Repository } from "typeorm";
 export class UserService {
     constructor() {}
 
-    async createUser (createUserDto:CreateUserDto) {
+    async createUser (createUserDto:CreateUserDto):Promise<User> {
         const result = await UserRepository.save(createUserDto.toEntity())
-        console.log(result)
         return result
     }
 }

@@ -18,7 +18,7 @@ export class User extends BaseTimeEntity {
     }
 
     // 정적 (static) 메소드는 클래스의 인스턴스가 아닌 클래스 이름으로 호출한다.
-    static signup(name:string,password:string,nickname:string,createdAt:Date,updatedAt:Date): User {
+    static signup(name:string,nickname:string,password:string,createdAt:Date,updatedAt:Date): User {
         const user = new User();
         user.name = name;
         user.nickname = nickname;
