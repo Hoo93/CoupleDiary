@@ -25,7 +25,8 @@
       "reflect-metadata": "^0.1.13",
       "routing-controllers": "^0.10.4",
       "typedi": "^0.10.0",
-      "typeorm": "0.3.17"
+      "typeorm": "0.3.17",
+      "typeorm-typedi-extensions": "^0.4.1"
    },
    "scripts": {
       "start": "ts-node src/index.ts",
