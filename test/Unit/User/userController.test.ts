@@ -7,6 +7,7 @@ import { instance, mock, verify, when } from "ts-mockito";
 import { CreateUserDto } from "../../../src/User/dto/createUserDto";
 import { nextTick } from "process";
 import { Mocker } from "ts-mockito/lib/Mock";
+import exp = require("constants");
 
 let req = httpMocks.createRequest()
 let res = httpMocks.createResponse()
@@ -20,26 +21,60 @@ createUserDto.password = "test password"
 
 describe("User Controller Test", () => {
 
+    let mockedService:UserService;
+    let userController:UserController;
+
     beforeEach(() => {
-        
-    })
-    it('should have a createUser function', () => {        
-        let stubService = mock(UserService);
-        let userController = new UserController(instance(stubService));
-        expect(typeof userController.createUser).toBe('function')
+        mockedService = mock(UserService);
+        userController = new UserController(instance(mockedService));
     })
 
-    it('should haveCalledWith a userService', () => {
+    describe("createUser method test", () => {
 
-        let stubService = mock(UserService);
-        const newUser = Promise.resolve(createUserDto.toEntity())
-        when(stubService.createUser(createUserDto)).thenResolve(new User())
-        let userController = new UserController(instance(stubService));
-        req.body = createUserDto
-        userController.createUser(req.body)
+        it('should have a createUser function', async () => {        
+            expect(typeof userController.createUser).toBe('function')
+        })
 
-        verify(stubService.createUser(createUserDto)).once()
+        it('should call userService when createUser', async () => {
+
+            const newUser = createUserDto.toEntity()
+            when(mockedService.createUser(createUserDto)).thenResolve(newUser)
+    
+            let userController = new UserController(instance(mockedService));
+            req.body = createUserDto
+            const result = await userController.createUser(req.body)
+    
+            verify(mockedService.createUser(createUserDto)).once()
+            expect(result).toBe(newUser)
+        })
+
     })
+
+    describe("findUserById method test", () => {
+
+        it('should have a findUserById function', async () => {        
+            expect(typeof userController.findUserById).toBe('function')
+        })
+    
+        it('should call userService when findUserById', async () => {
+    
+            const user = createUserDto.toEntity()
+            when(mockedService.findUserById(1)).thenResolve(user)
+    
+            let userController = new UserController(instance(mockedService));
+            
+            const result = await userController.findUserById(1)
+    
+            verify(mockedService.findUserById(1)).once()
+            expect(result).toBe(user)
+
+        })
+
+    })
+
+    
+
+
 
 })
 

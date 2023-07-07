@@ -9,7 +9,6 @@ export class UserRepository extends Repository<User> {
     constructor() {
         super(User,AppDataSource.createEntityManager());
     }
-
 }
 
 

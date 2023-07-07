@@ -1,7 +1,7 @@
 import { Inject, Service } from "typedi";
 import { CreateUserDto } from "./dto/createUserDto";
 import { User } from "./User";
-import { BadRequestError } from "routing-controllers";
+import { BadRequestError, NotFoundError } from "routing-controllers";
 import { UserRepository } from "./UserRepository";
 
 @Service()
@@ -15,14 +15,12 @@ export class UserService {
         const user = createUserDto.toEntity();
 
         const findName = await this.userRepository.findOneBy({name:user.name})
-        console.log(findName)
         if (findName) {
             console.log("should throw error name")
             throw new BadRequestError(`name with ${user.name} already exist`)
         }
         
         const findNickname = await this.userRepository.findOneBy({nickname:user.nickname})
-        console.log(findNickname)
         if (findNickname) {
             console.log("should throw error nickname")
             throw new BadRequestError(`name with ${user.nickname} already exist`)
@@ -35,6 +33,14 @@ export class UserService {
             console.error("error on save :",error)
         }
         
+    }
+
+    async findUserById (id:number): Promise<User> {
+        const user = await this.userRepository.findOneBy({id})
+        if (!user) {
+            throw new NotFoundError(`user with ${id} doesn't exist`)
+        }
+        return user
     }
 
 }
