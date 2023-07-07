@@ -6,9 +6,13 @@ import { UserRepository } from "../../../src/User/UserRepository";
 import { deepEqual, instance, mock, spy, when, verify } from "ts-mockito";
 import { CreateUserDto } from "../../../src/User/dto/createUserDto";
 import exp = require("constants");
+import { BadRequestError, HttpError } from "routing-controllers";
+import { Verify } from "crypto";
+
 
 let req = httpMocks.createRequest()
 let res = httpMocks.createResponse()
+let next = jest.fn()
 
 const userService = new UserService();
 
@@ -53,7 +57,10 @@ describe("User Service Test", () => {
             now,
             now
             )
-            
+        
+        // UserRepository.findOneBy = jest.fn().mockResolvedValue(null)
+        // UserRepository.save = jest.fn().mockResolvedValue(user)        
+
         let spiedUserRepo = spy(UserRepository);
         jest.spyOn(UserRepository,'findOneBy').mockReturnValue(null)
         when(spiedUserRepo.save(user)).thenResolve(user)
@@ -62,13 +69,54 @@ describe("User Service Test", () => {
         when(mockedDto.toEntity()).thenReturn(user)
         
         let dto = instance(mockedDto)
-        const result = await userService.createUser(dto)
-// 
+        const result = await userService.createUser(dto,next)
+
         expect(dto.toEntity()).toBe(user)
-        // expect(result).toBe(user)
+        expect(result).toBe(user)
+        expect(UserRepository.save).toBeCalledTimes(1)
         // verify(spiedUserRepo.save(user)).once()
-        
     })
+
+    it('should throw error if name in DB', async () => {
+        const now = new Date();
+        const user:User = User.signup(
+            "test name",
+            "test nickname",
+            "test password",
+            now,
+            now
+            )
+
+        const newUser:User = User.signup(
+            "test name",
+            "test nickname",
+            "test password",
+            now,
+            now
+        )
+
+        // let mockedRepo = mock(UserRepository);
+        // when(mockedRepo.save(user)).thenReturn(user)
+        
+        
+        UserRepository.findOneBy = jest.fn().mockResolvedValue(newUser)
+        UserRepository.save = jest.fn().mockResolvedValue(user)        
+
+        const errorMessage = `[BadRequestError: name with ${user.name} already exist]`
+        
+        let mockedDto = mock(CreateUserDto);
+        when(mockedDto.toEntity()).thenReturn(user)
+        
+        let dto = instance(mockedDto)
+        
+        userService.createUser(dto,next)
+
+        // verify(UserRepository.findOneBy({name:user.name})).once()
+        expect(UserRepository.findOneBy).toBeCalledTimes(2)
+        // expect(() => { userService.createUser(dto,next)}).toThrow()
+    })
+
+
 
 
 })

@@ -1,6 +1,15 @@
-import { Service } from "typedi";
+import Container, { Service } from "typedi";
 import { AppDataSource } from "../data-source";
 import { User } from "./User";
-import { Repository } from "typeorm";
+import { DataSource, Repository } from "typeorm";
+import { useContainer } from "routing-controllers";
 
-export const UserRepository = AppDataSource.getRepository(User);
+@Service()
+export class UserRepository extends Repository<User> {
+    constructor() {
+        super(User,AppDataSource.createEntityManager());
+    }
+
+}
+
+

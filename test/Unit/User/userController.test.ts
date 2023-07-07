@@ -5,9 +5,11 @@ import { UserService } from "../../../src/User/UserService";
 import { UserRepository } from "../../../src/User/UserRepository";
 import { mock, when } from "ts-mockito";
 import { CreateUserDto } from "../../../src/User/dto/createUserDto";
+import { nextTick } from "process";
 
 let req = httpMocks.createRequest()
 let res = httpMocks.createResponse()
+let next = jest.fn()
 
 const userService:UserService = new UserService();
 userService.createUser = jest.fn()
@@ -28,9 +30,9 @@ describe("User Controller Test", () => {
         } as CreateUserDto
 
         req.body = createUserDto
-        userController.createUser(req.body)
+        userController.createUser(req.body,next)
 
-        expect(userService.createUser).toHaveBeenCalledWith(req.body)
+        expect(userService.createUser).toHaveBeenCalledWith(req.body,next)
         expect(userService.createUser).toBeCalledTimes(1)
     })
 
