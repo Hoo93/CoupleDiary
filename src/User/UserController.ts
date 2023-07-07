@@ -15,9 +15,8 @@ export class UserController {
 
     @Post('/signup')
     public async createUser(
-        @Body() createUserDto:CreateUserDto,
-        next:express.NextFunction
+        @Body() createUserDto:CreateUserDto
     ) {
-        return await this.userService.createUser(createUserDto,next);
+        return await this.userService.createUser(createUserDto);
     }
 }

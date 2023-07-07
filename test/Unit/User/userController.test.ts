@@ -3,37 +3,42 @@ import httpMocks = require('node-mocks-http');
 import { User } from "../../../src/User/User";
 import { UserService } from "../../../src/User/UserService";
 import { UserRepository } from "../../../src/User/UserRepository";
-import { mock, when } from "ts-mockito";
+import { instance, mock, verify, when } from "ts-mockito";
 import { CreateUserDto } from "../../../src/User/dto/createUserDto";
 import { nextTick } from "process";
+import { Mocker } from "ts-mockito/lib/Mock";
 
 let req = httpMocks.createRequest()
 let res = httpMocks.createResponse()
 let next = jest.fn()
 
-const userService:UserService = new UserService();
-userService.createUser = jest.fn()
+
+const createUserDto:CreateUserDto = new CreateUserDto();
+createUserDto.name = "test name",
+createUserDto.nickname = "test nickname",
+createUserDto.password = "test password"
 
 describe("User Controller Test", () => {
-    it('should have a createUser function', () => {
-        const stubService:UserService = mock(UserService);
-        const userController:UserController = new UserController(stubService);
+
+    beforeEach(() => {
+        
+    })
+    it('should have a createUser function', () => {        
+        let stubService = mock(UserService);
+        let userController = new UserController(instance(stubService));
         expect(typeof userController.createUser).toBe('function')
     })
 
     it('should haveCalledWith a userService', () => {
-        const userController:UserController = new UserController(userService);
-        const createUserDto:CreateUserDto = {
-            name:"test name",
-            nickname:"test nickname",
-            password:"test password"
-        } as CreateUserDto
 
+        let stubService = mock(UserService);
+        const newUser = Promise.resolve(createUserDto.toEntity())
+        when(stubService.createUser(createUserDto)).thenResolve(new User())
+        let userController = new UserController(instance(stubService));
         req.body = createUserDto
-        userController.createUser(req.body,next)
+        userController.createUser(req.body)
 
-        expect(userService.createUser).toHaveBeenCalledWith(req.body,next)
-        expect(userService.createUser).toBeCalledTimes(1)
+        verify(stubService.createUser(createUserDto)).once()
     })
 
 })

@@ -1,11 +1,8 @@
-import Container, { Inject, Service } from "typedi";
+import { Inject, Service } from "typedi";
 import { CreateUserDto } from "./dto/createUserDto";
-import { AppDataSource } from "../data-source";
 import { User } from "./User";
 import { BadRequestError } from "routing-controllers";
-import { loggerMiddleWare } from "../middleware/logger";
 import { NextFunction } from "express";
-import { In, Repository } from "typeorm";
 import { UserRepository } from "./UserRepository";
 
 @Service()
@@ -15,7 +12,7 @@ export class UserService {
         private userRepository:UserRepository
     ) {}
 
-    async createUser (createUserDto:CreateUserDto,next:NextFunction):Promise<User> {
+    async createUser (createUserDto:CreateUserDto):Promise<User> {
         const user = createUserDto.toEntity();
         
         const findName = await this.userRepository.findOneBy({name:user.name})
