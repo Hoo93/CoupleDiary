@@ -3,6 +3,7 @@ import { Inject, Service } from 'typedi';
 import { UserService } from './UserService';
 import { Body, Controller, Get, JsonController, Param, Patch, Post } from 'routing-controllers';
 import { CreateUserDto } from './dto/createUserDto';
+import { UpdateUserDto } from './dto/updateUserDto';
 
 
 @JsonController('/user')
@@ -45,7 +46,15 @@ export class UserController {
     }
 
     @Patch('/:id')
-    public async updateUser (@Param('id') id:number) {
+    public async updateUser (
+        @Param('id') id:number,
+        @Body() updateUserDto:UpdateUserDto) {
+        try {
+            return await this.userService.updateUser(id,updateUserDto);
+        } catch(error) {
+            console.error(error);
+            return error.message;
+        }
         
     }
 }

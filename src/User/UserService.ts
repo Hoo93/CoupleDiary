@@ -3,6 +3,8 @@ import { CreateUserDto } from "./dto/createUserDto";
 import { User } from "./User";
 import { BadRequestError, NotFoundError } from "routing-controllers";
 import { UserRepository } from "./UserRepository";
+import { UpdateUserDto } from "./dto/updateUserDto";
+import { UpdateResult } from "typeorm";
 
 @Service()
 export class UserService {
@@ -44,6 +46,26 @@ export class UserService {
 
     async findAll():Promise<User[]> {
         return await this.userRepository.find();
+    }
+
+    async updateUser(id:number,updateUserDto:UpdateUserDto): Promise<User> {
+        let user = await this.userRepository.findOneBy({id});
+        if (!user) {
+            throw new NotFoundError(`user id with ${id} doesnt exist`)
+        }
+
+        const now = new Date();
+        user.updatedAt = now;
+        user = {...user,...updateUserDto};
+
+        try {
+            const updatedUser = await this.userRepository.save(user);
+            return updatedUser;
+        } catch (error) {
+            console.error(error);
+            return error.message;
+        }
+
     }
 
 
