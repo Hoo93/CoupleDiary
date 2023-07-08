@@ -16,13 +16,11 @@ export class UserService {
 
         const findName = await this.userRepository.findOneBy({name:user.name})
         if (findName) {
-            console.log("should throw error name")
             throw new BadRequestError(`name with ${user.name} already exist`)
         }
         
         const findNickname = await this.userRepository.findOneBy({nickname:user.nickname})
         if (findNickname) {
-            console.log("should throw error nickname")
             throw new BadRequestError(`name with ${user.nickname} already exist`)
         }
         
@@ -30,7 +28,8 @@ export class UserService {
             const result = await this.userRepository.save(createUserDto.toEntity())
             return result
         } catch(error) {
-            console.error("error on save :",error)
+            console.error("error on save :",error);
+            return error.message;
         }
         
     }
@@ -42,5 +41,7 @@ export class UserService {
         }
         return user
     }
+
+
 
 }

@@ -3,7 +3,7 @@ import { UserService } from "../../../src/User/UserService";
 import { UserRepository } from "../../../src/User/UserRepository";
 import { deepEqual, instance, mock, spy, when, verify, reset } from "ts-mockito";
 import { CreateUserDto } from "../../../src/User/dto/createUserDto";
-import { BadRequestError } from "routing-controllers";
+import { BadRequestError, NotFoundError } from "routing-controllers";
 import { userInfo } from "os";
 import { resourceLimits } from "worker_threads";
 
@@ -30,76 +30,110 @@ describe("User Service Test", () => {
         mockedRepository = mock(UserRepository)
         userService = new UserService(instance(mockedRepository))
     })
-        
 
-    it('should have a createUser function', () => {
-        expect(typeof userService.createUser).toBe('function');
+    describe('userService createUser test', () => {
+        it('should be a function', () => {
+            expect(typeof userService.createUser).toBe('function');
+        })
+    
+        it('dto.toEntity should call User.signup',() => {
+            const spyUserSignUp = jest.spyOn(User,"signup")
+    
+            createUserDto.toEntity();
+            expect(spyUserSignUp).toBeCalledTimes(1)
+        })
+    
+        it('dto.toEntity should return user',() => {
+            const result = createUserDto.toEntity();
+            
+            expect(result.name).toBe(createUserDto.name)
+            expect(result.nickname).toBe(createUserDto.nickname)
+            expect(result.password).toBe(createUserDto.password)
+        })
+    
+        it('createUser should return user', async () => {
+            when(mockedRepository.findOneBy(deepEqual({name:user.name}))).thenReturn(null)
+            when(mockedRepository.findOneBy(deepEqual({nickname:user.nickname}))).thenReturn(null)
+            when(mockedRepository.save(deepEqual(user))).thenResolve(user)
+            
+            let mockedDto = mock(CreateUserDto);
+            when(mockedDto.toEntity()).thenReturn(user)
+            let dto = instance(mockedDto)
+    
+            const result = await userService.createUser(dto)
+            
+            expect(dto.toEntity()).toBe(user)
+            expect(result).toBe(user)
+            verify(mockedRepository.findOneBy(deepEqual({name:user.name}))).once()
+            verify(mockedRepository.findOneBy(deepEqual({nickname:user.nickname}))).once()
+            verify(mockedRepository.save(user)).once()
+        })
+    
+        it('should throw error if same name in DB', async () => {
+            let mockedDto = mock(CreateUserDto);
+            when(mockedDto.toEntity()).thenReturn(user)
+            let dto = instance(mockedDto)
+    
+            when(mockedRepository.findOneBy(deepEqual({name:dto.toEntity().name}))).thenResolve(user)
+            when(mockedRepository.findOneBy(deepEqual({nickname:dto.toEntity().nickname}))).thenReturn(null)
+            
+            // 비동기 함수의 에러처리 테스트
+            await expect(async () => { 
+                await userService.createUser(dto);
+            }).rejects.toThrowError(new BadRequestError(`name with ${user.name} already exist`))
+            verify(mockedRepository.findOneBy(deepEqual({name:user.name}))).times(1)
+            verify(mockedRepository.findOneBy(deepEqual({nickname:user.nickname}))).never()
+        })    
+    
+        it('should throw error if same nickname in DB', async () => {
+            let mockedDto = mock(CreateUserDto);
+            when(mockedDto.toEntity()).thenReturn(user)
+            let dto = instance(mockedDto)
+    
+            when(mockedRepository.findOneBy(deepEqual({name:dto.toEntity().name}))).thenReturn(null)
+            when(mockedRepository.findOneBy(deepEqual({nickname:dto.toEntity().nickname}))).thenResolve(user)
+            
+            // 비동기 함수의 에러처리 테스트
+            await expect(async () => { 
+                await userService.createUser(dto);
+            }).rejects.toThrowError(new BadRequestError(`name with ${user.nickname} already exist`))
+            verify(mockedRepository.findOneBy(deepEqual({name:user.name}))).once()
+            verify(mockedRepository.findOneBy(deepEqual({nickname:user.nickname}))).once()
+        })        
     })
 
-    it('dto.toEntity should call User.signup',() => {
-        const spyUserSignUp = jest.spyOn(User,"signup")
+    describe('userService findUserById test', () => {
+        
+        it('should be a function', async () => {
+            expect(typeof userService.findUserById).toBe('function')
+        })
 
-        createUserDto.toEntity();
-        expect(spyUserSignUp).toBeCalledTimes(1)
+        it('should return user', async () => {
+            when(mockedRepository.findOneBy(deepEqual({id:1}))).thenResolve(user)
+            
+            const result = await userService.findUserById(1)
+            
+            expect(result).toBe(user)
+            verify(mockedRepository.findOneBy(deepEqual({id:1}))).once()
+        })
+
+        it('should throw NotFoundError', async () => {
+            when(mockedRepository.findOneBy(deepEqual({id:1}))).thenReturn(null)
+        
+            await expect(async () => {
+                await userService.findUserById(1)
+            }).rejects.toThrowError(NotFoundError)
+            verify(mockedRepository.findOneBy(deepEqual({id:1}))).once()
+        })
+
     })
 
-    it('dto.toEntity should return user',() => {
-        const result = createUserDto.toEntity();
+    describe('' , () => {
         
-        expect(result.name).toBe(createUserDto.name)
-        expect(result.nickname).toBe(createUserDto.nickname)
-        expect(result.password).toBe(createUserDto.password)
     })
-
-    it('createUser should return user', async () => {
-        when(mockedRepository.findOneBy(deepEqual({name:user.name}))).thenReturn(null)
-        when(mockedRepository.findOneBy(deepEqual({nickname:user.nickname}))).thenReturn(null)
-        when(mockedRepository.save(deepEqual(user))).thenResolve(user)
         
-        let mockedDto = mock(CreateUserDto);
-        when(mockedDto.toEntity()).thenReturn(user)
-        let dto = instance(mockedDto)
 
-        const result = await userService.createUser(dto)
-        
-        expect(dto.toEntity()).toBe(user)
-        expect(result).toBe(user)
-        verify(mockedRepository.findOneBy(deepEqual({name:user.name}))).once()
-        verify(mockedRepository.findOneBy(deepEqual({nickname:user.nickname}))).once()
-        verify(mockedRepository.save(user)).once()
-    })
-
-    it('should throw error if same name in DB', async () => {
-        let mockedDto = mock(CreateUserDto);
-        when(mockedDto.toEntity()).thenReturn(user)
-        let dto = instance(mockedDto)
-
-        when(mockedRepository.findOneBy(deepEqual({name:dto.toEntity().name}))).thenResolve(user)
-        when(mockedRepository.findOneBy(deepEqual({nickname:dto.toEntity().nickname}))).thenReturn(null)
-        
-        // 비동기 함수의 에러처리 테스트
-        await expect(async () => { 
-            await userService.createUser(dto);
-        }).rejects.toThrowError(new BadRequestError(`name with ${user.name} already exist`))
-        verify(mockedRepository.findOneBy(deepEqual({name:user.name}))).times(1)
-        verify(mockedRepository.findOneBy(deepEqual({nickname:user.nickname}))).never()
-    })    
-
-    it('should throw error if same nickname in DB', async () => {
-        let mockedDto = mock(CreateUserDto);
-        when(mockedDto.toEntity()).thenReturn(user)
-        let dto = instance(mockedDto)
-
-        when(mockedRepository.findOneBy(deepEqual({name:dto.toEntity().name}))).thenReturn(null)
-        when(mockedRepository.findOneBy(deepEqual({nickname:dto.toEntity().nickname}))).thenResolve(user)
-        
-        // 비동기 함수의 에러처리 테스트
-        await expect(async () => { 
-            await userService.createUser(dto);
-        }).rejects.toThrowError(new BadRequestError(`name with ${user.nickname} already exist`))
-        verify(mockedRepository.findOneBy(deepEqual({name:user.name}))).once()
-        verify(mockedRepository.findOneBy(deepEqual({nickname:user.nickname}))).once()
-    })
+    
 
 })
 

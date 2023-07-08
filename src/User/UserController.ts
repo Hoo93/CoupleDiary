@@ -24,6 +24,16 @@ export class UserController {
         
     }
 
+    @Get()
+    public async findAllUser() {
+        try {
+            return await this.userService.findAll();
+        } catch(error) {
+            console.error(error);
+            return error.message;
+        }
+    }
+
     @Get('/:id')
     public async findUserById (@Param('/id') id:number) { 
         try {
@@ -32,6 +42,5 @@ export class UserController {
             console.error(error);
             return error.message;
         }
-        
     }
 }
