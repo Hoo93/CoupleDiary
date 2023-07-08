@@ -8,6 +8,7 @@ import { CreateUserDto } from "../../../src/User/dto/createUserDto";
 import { nextTick } from "process";
 import { Mocker } from "ts-mockito/lib/Mock";
 import exp = require("constants");
+import { NotFoundError } from "routing-controllers";
 
 let req = httpMocks.createRequest()
 let res = httpMocks.createResponse()
@@ -57,7 +58,6 @@ describe("User Controller Test", () => {
         })
     
         it('should call userService when findUserById', async () => {
-    
             const user = createUserDto.toEntity()
             when(mockedService.findUserById(1)).thenResolve(user)
     
@@ -67,13 +67,31 @@ describe("User Controller Test", () => {
     
             verify(mockedService.findUserById(1)).once()
             expect(result).toBe(user)
-
         })
 
     })
 
+    describe("findAllUser method test", () => {
 
+        it('should have a findAllUser function', async () => {        
+            expect(typeof userController.findAllUser).toBe('function')
+        })
     
+        it('should call userService when findAllUser', async () => {
+            const users:User[] = [createUserDto.toEntity()]
+            
+            when(mockedService.findAll()).thenResolve(users)
+    
+            let userController = new UserController(instance(mockedService));
+            
+            const result = await userController.findAllUser()
+    
+            verify(mockedService.findAll()).once()
+            expect(result).toBe(users)
+        })
+
+    })
+
 
 
 

@@ -128,7 +128,22 @@ describe("User Service Test", () => {
 
     })
 
-    describe('' , () => {
+    describe('userService findAll method test' , () => {
+
+        it('should be a function', async () => {
+            expect(typeof userService.findAll).toBe('function')
+        })
+
+        it('should return User[]', async () => {
+            const users:User[] = [createUserDto.toEntity()]
+
+            when(mockedRepository.find()).thenResolve(users)
+
+            const result = await userService.findAll();
+
+            expect(result).toBe(users)
+            verify(mockedRepository.find()).once()
+        })
         
     })
         
