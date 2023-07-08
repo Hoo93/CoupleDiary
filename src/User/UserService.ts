@@ -13,16 +13,28 @@ export class UserService {
         private userRepository:UserRepository
     ) {}
 
+    async validateName(name:string):Promise<boolean> {
+        if (await this.userRepository.findOneBy({name})) {
+            return false
+        }
+        return true
+    }
+
+    async validateNickname(nickname:string):Promise<boolean> {
+        if (await this.userRepository.findOneBy({nickname})) {
+            return false
+        }
+        return true
+    }
+
     async createUser (createUserDto:CreateUserDto):Promise<User> {
         const user = createUserDto.toEntity();
 
-        const findName = await this.userRepository.findOneBy({name:user.name})
-        if (findName) {
+        if (!this.validateName(user.name)) {
             throw new BadRequestError(`name with ${user.name} already exist`)
         }
         
-        const findNickname = await this.userRepository.findOneBy({nickname:user.nickname})
-        if (findNickname) {
+        if (!this.validateNickname(user.nickname)) {
             throw new BadRequestError(`name with ${user.nickname} already exist`)
         }
         
@@ -57,6 +69,8 @@ export class UserService {
         const now = new Date();
         user.updatedAt = now;
         user = {...user,...updateUserDto};
+
+
 
         try {
             const updatedUser = await this.userRepository.save(user);

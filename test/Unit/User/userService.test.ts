@@ -144,7 +144,16 @@ describe("User Service Test", () => {
             expect(result).toBe(users)
             verify(mockedRepository.find()).once()
         })
-        
+
+    })
+
+    describe('userService updateUser method test' , () => {
+
+        it('should be a function', async () => {
+            expect(typeof userService.updateUser).toBe('function')
+        })
+
+        it('should ')
     })
         
 
