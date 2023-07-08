@@ -92,6 +92,13 @@ describe("User Controller Test", () => {
 
     })
 
+    describe("updateUser method test", () => {
+
+        it('should have a updateUser function', async () => {        
+            expect(typeof userController.updateUser).toBe('function')
+        })
+    })
+
 
 
 

@@ -35,7 +35,7 @@ export class UserController {
     }
 
     @Get('/:id')
-    public async findUserById (@Param('/id') id:number) { 
+    public async findUserById (@Param('id') id:number) { 
         try {
             return await this.userService.findUserById(id);
         } catch(error) {
@@ -44,5 +44,8 @@ export class UserController {
         }
     }
 
-    
+    @Patch('/:id')
+    public async updateUser (@Param('id') id:number) {
+        
+    }
 }
