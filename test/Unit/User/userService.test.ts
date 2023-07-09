@@ -196,7 +196,23 @@ describe("User Service Test", () => {
             await expect( async () => {
                 await userService.updateUser(1,updateUserDto,now) 
             }).rejects.toThrowError("user with id:1 doesn't exist")
+            verify(mockedRepository.findOneBy(deepEqual({id:user.id}))).once()
 
+        })
+
+        it('should throw error when same nickname in DB', async() => {
+            const findNickname = new User();
+            findNickname.nickname = user.nickname
+            updateUserDto.nickname = user.nickname
+            when(mockedRepository.findOneBy(deepEqual({id:user.id}))).thenResolve(user)
+            when(mockedRepository.findOneBy(deepEqual({nickname:user.nickname}))).thenResolve(findNickname)
+
+            await expect(async () => {
+                await userService.updateUser(1,updateUserDto,now)
+            }).rejects.toThrowError(`nickname with ${findNickname.nickname} already exist`)
+            verify(mockedRepository.findOneBy(deepEqual({id:user.id}))).once()
+            verify(mockedRepository.findOneBy(deepEqual({nickname:user.nickname}))).once()
+            
         })
     })
         
