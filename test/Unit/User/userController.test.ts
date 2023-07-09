@@ -11,20 +11,17 @@ import exp = require("constants");
 import { NotFoundError } from "routing-controllers";
 
 let req = httpMocks.createRequest()
-let res = httpMocks.createResponse()
-let next = jest.fn()
-
-
-const createUserDto:CreateUserDto = new CreateUserDto();
-createUserDto.name = "test name",
-createUserDto.nickname = "test nickname",
-createUserDto.password = "test password"
 
 describe("User Controller Test", () => {
 
     let mockedService:UserService;
     let userController:UserController;
 
+    const createUserDto:CreateUserDto = new CreateUserDto();
+    createUserDto.name = "test name",
+    createUserDto.nickname = "test nickname",
+    createUserDto.password = "test password"
+    
     beforeEach(() => {
         mockedService = mock(UserService);
         userController = new UserController(instance(mockedService));
@@ -98,7 +95,11 @@ describe("User Controller Test", () => {
             expect(typeof userController.updateUser).toBe('function')
         })
 
-        
+        // it('should return updatedUser' , async() => {
+
+        // })
+
+    
     })
 
 

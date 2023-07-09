@@ -45,22 +45,20 @@ export class UserService {
         return await this.userRepository.find();
     }
 
-    async updateUser(id:number,updateUserDto:UpdateUserDto,updatedAt:Date): Promise<User> {
+    async updateUser(id:number,updateUserDto:UpdateUserDto,updatedAt:Date): Promise<Number> {
         let user = await this.userRepository.findOneBy({id});
         if (!user) {
             throw new NotFoundError(`user with id:${id} doesn't exist`)
         }
 
-        let findNickname = await this.userRepository.findOneBy({nickname:user.nickname})
+        let findNickname = await this.userRepository.findOneBy({nickname:updateUserDto.nickname})
         if (findNickname) {
              throw new BadRequestError(`nickname with ${updateUserDto.nickname} already exist`) 
             }
-        
-        const updatedUser = updateUserDto.toEntity(user,updatedAt)
-
+    
         try {
-            const newUser = await this.userRepository.save(updatedUser);
-            return newUser;
+            const updateResult = await this.userRepository.update(user.id,updateUserDto);
+            return user.id;
         } catch (error) {
             console.error(error);
             return error.message;

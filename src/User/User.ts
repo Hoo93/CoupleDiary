@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, Unique } from "typeorm"
 import { BaseTimeEntity } from "../entity/BaseTimeEntity";
+import { userInfo } from "os";
 
 @Entity()
 @Unique(['name'])
@@ -11,6 +12,9 @@ export class User extends BaseTimeEntity {
 
     @Column()
     password:string;
+
+    @Column({default:true})
+    isActivated:Boolean;
 
     @Column()
     nickname:string;
@@ -28,6 +32,14 @@ export class User extends BaseTimeEntity {
         user.createdAt = createdAt;
         user.updatedAt = updatedAt;
         return user
+    }
+
+    activate(): void {
+        this.isActivated = true;
+    }
+
+    deactivate(): void {
+        this.isActivated = false;
     }
 
 }

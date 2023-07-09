@@ -10,20 +10,17 @@ export class UpdateUserDto {
     @MinLength(2,{message:'name should be longer than 2'})
     nickname:string;
 
-    public toEntity(user:User,updatedAt:Date):User { 
-        const updateUserDto = {
-            password:this.password,
-            nickname:this.nickname,
-            updatedAt:updatedAt
-        }
+    // public toEntity(user:User,updatedAt:Date):User { 
+    //     const updateUserDto = {
+    //         password:this.password,
+    //         nickname:this.nickname,
+    //         updatedAt:updatedAt
+    //     }
 
-        const updatedUser:User = {
-            ...user,
-            ...updateUserDto
-        }
-        return updatedUser
-
-        
-
-    }
+    //     const updatedUser:User = {
+    //         ...user,
+    //         ...updateUserDto,
+    //     }
+    //     return updatedUser
+    // }
 }

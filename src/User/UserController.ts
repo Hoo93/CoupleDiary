@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { Inject, Service } from 'typedi';
 import { UserService } from './UserService';
-import { Body, Controller, Get, JsonController, Param, Patch, Post } from 'routing-controllers';
+import { Body, Controller, Delete, Get, JsonController, Param, ParamMetadata, Patch, Post } from 'routing-controllers';
 import { CreateUserDto } from './dto/createUserDto';
 import { UpdateUserDto } from './dto/updateUserDto';
 
@@ -56,6 +56,15 @@ export class UserController {
             console.error(error);
             return error.message;
         }
-        
+    }
+
+    @Delete('/:id')
+    public async deleteUser (@Param('id') id:number) {
+        try {
+            
+        } catch (e) {
+            console.error(e)
+            return e.message
+        }
     }
 }
