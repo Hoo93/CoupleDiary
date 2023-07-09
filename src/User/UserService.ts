@@ -47,6 +47,9 @@ export class UserService {
 
     async updateUser(id:number,updateUserDto:UpdateUserDto,updatedAt:Date): Promise<User> {
         let user = await this.userRepository.findOneBy({id});
+        if (!user) {
+            throw new NotFoundError(`user with id:${id} doesn't exist`)
+        }
 
         let findNickname = await this.userRepository.findOneBy({nickname:user.nickname})
         if (findNickname) {

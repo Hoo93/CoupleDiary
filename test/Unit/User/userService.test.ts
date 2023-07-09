@@ -157,7 +157,7 @@ describe("User Service Test", () => {
             updateUserDto = new UpdateUserDto;
             updateUserDto.nickname = "test update";
             updateUserDto.password = "test update";
-            // updatedUser = {...user,...updateUserDto};
+            updatedUser = updateUserDto.toEntity(user,now)
             
         })
 
@@ -166,8 +166,6 @@ describe("User Service Test", () => {
         })
 
         it('updateUserDto.toEntity should return updatedUser', () => {
-            const now = new Date();
-            updatedUser = updateUserDto.toEntity(user,now)
 
             expect(updatedUser.id).toBe(user.id)
             expect(updatedUser.name).toBe(user.name)
@@ -177,9 +175,7 @@ describe("User Service Test", () => {
         })
 
         it('should call findOneBy twice, call save once, and return updatedUser', async () => {
-            const now = new Date();
-            updatedUser = updateUserDto.toEntity(user,now)
-
+            
             when(mockedRepository.findOneBy(deepEqual({id:user.id}))).thenResolve(user)
             when(mockedRepository.findOneBy(deepEqual({nickname:user.nickname}))).thenReturn(null)
             when(mockedRepository.save(deepEqual(updatedUser))).thenResolve(updatedUser)
@@ -191,6 +187,16 @@ describe("User Service Test", () => {
             verify(mockedRepository.save(deepEqual(updatedUser))).once()
             expect(result).toBe(updatedUser)
             
+        })
+
+        it('should throw error when user with id doesnt exist', async() => {
+            
+            when(mockedRepository.findOneBy(deepEqual({id:user.id}))).thenReturn(null)
+            
+            await expect( async () => {
+                await userService.updateUser(1,updateUserDto,now) 
+            }).rejects.toThrowError("user with id:1 doesn't exist")
+
         })
     })
         

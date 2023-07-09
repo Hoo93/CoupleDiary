@@ -50,7 +50,8 @@ export class UserController {
         @Param('id') id:number,
         @Body() updateUserDto:UpdateUserDto) {
         try {
-            return await this.userService.updateUser(id,updateUserDto);
+            const now = new Date();
+            return await this.userService.updateUser(id,updateUserDto,now);
         } catch(error) {
             console.error(error);
             return error.message;
