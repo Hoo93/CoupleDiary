@@ -5,6 +5,7 @@ import { deepEqual, instance, mock, spy, when, verify, reset } from "ts-mockito"
 import { CreateUserDto } from "../../../src/User/dto/createUserDto";
 import { BadRequestError, NotFoundError } from "routing-controllers";
 import { UpdateUserDto } from "../../../src/User/dto/updateUserDto";
+import exp = require("constants");
 
 describe("User Service Test", () => {
 
@@ -150,15 +151,28 @@ describe("User Service Test", () => {
 
     describe('userService updateUser method test' , () => {
         let updateUserDto:UpdateUserDto;
-        let updatedUser:User
+        // let updatedUser:User
 
         beforeEach(() => {
-            updateUserDto = {nickname:"test update",password:"test update"}
-            updatedUser = {...user,...updateUserDto}
+            updateUserDto = new UpdateUserDto;
+            updateUserDto.nickname = "test update";
+            updateUserDto.password = "test update";
+            // updatedUser = {...user,...updateUserDto};
         })
 
-        it('should be a function', async () => {
+        it('should be a function',async () => {
             expect(typeof userService.updateUser).toBe('function')
+        })
+
+        it('updateUserDto.toEntity should return updatedUser', () => {
+            const now = new Date();
+            const updatedUser = updateUserDto.toEntity(user,now)
+
+            expect(updatedUser.id).toBe(user.id)
+            expect(updatedUser.name).toBe(user.name)
+            expect(updatedUser.nickname).toBe(updateUserDto.nickname)
+            expect(updatedUser.password).toBe(updateUserDto.password)
+            expect(updatedUser.updatedAt).toBe(now)
         })
 
         it('should call findOneBy twice, call save once', async () => {
