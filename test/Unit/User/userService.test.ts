@@ -151,13 +151,14 @@ describe("User Service Test", () => {
 
     describe('userService updateUser method test' , () => {
         let updateUserDto:UpdateUserDto;
-        // let updatedUser:User
+        let updatedUser:User
 
         beforeEach(() => {
             updateUserDto = new UpdateUserDto;
             updateUserDto.nickname = "test update";
             updateUserDto.password = "test update";
             // updatedUser = {...user,...updateUserDto};
+            
         })
 
         it('should be a function',async () => {
@@ -166,7 +167,7 @@ describe("User Service Test", () => {
 
         it('updateUserDto.toEntity should return updatedUser', () => {
             const now = new Date();
-            const updatedUser = updateUserDto.toEntity(user,now)
+            updatedUser = updateUserDto.toEntity(user,now)
 
             expect(updatedUser.id).toBe(user.id)
             expect(updatedUser.name).toBe(user.name)
@@ -175,9 +176,20 @@ describe("User Service Test", () => {
             expect(updatedUser.updatedAt).toBe(now)
         })
 
-        it('should call findOneBy twice, call save once', async () => {
-        
-            
+        it('should call findOneBy twice, call save once, and return updatedUser', async () => {
+            const now = new Date();
+            updatedUser = updateUserDto.toEntity(user,now)
+
+            when(mockedRepository.findOneBy(deepEqual({id:user.id}))).thenResolve(user)
+            when(mockedRepository.findOneBy(deepEqual({nickname:user.nickname}))).thenReturn(null)
+            when(mockedRepository.save(deepEqual(updatedUser))).thenResolve(updatedUser)
+
+            const result = await userService.updateUser(1,updateUserDto,now);
+
+            verify(mockedRepository.findOneBy(deepEqual({id:user.id}))).once()
+            verify(mockedRepository.findOneBy(deepEqual({nickname:user.nickname}))).once()
+            verify(mockedRepository.save(deepEqual(updatedUser))).once()
+            expect(result).toBe(updatedUser)
             
         })
     })
