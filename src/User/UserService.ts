@@ -13,25 +13,15 @@ export class UserService {
         private userRepository:UserRepository
     ) {}
 
-    async validateName(name:string):Promise<boolean> {
-        if (await this.userRepository.findOneBy({name})) {
-            return false
-        }
-        return true
-    }
-
-    async validateNickname(nickname:string):Promise<boolean> {
-        if (await this.userRepository.findOneBy({nickname})) {
-            return false
-        }
-        return true
-    }
-
     async createUser (createUserDto:CreateUserDto):Promise<User> {
         const user = createUserDto.toEntity();
 
-        if (!this.validateName(user.name)) { throw new BadRequestError(`name with ${user.name} already exist`) }
-        if (!this.validateNickname(user.nickname)) { throw new BadRequestError(`name with ${user.nickname} already exist`) }
+        if (await this.userRepository.findOneBy({name:user.name})) {
+            throw new BadRequestError(`name with ${user.name} already exist`) 
+           }
+        if (await this.userRepository.findOneBy({nickname:user.nickname})) {
+            throw new BadRequestError(`nickname with ${user.nickname} already exist`) 
+           }   
         
         try {
             const result = await this.userRepository.save(createUserDto.toEntity())
@@ -58,9 +48,10 @@ export class UserService {
     async updateUser(id:number,updateUserDto:UpdateUserDto): Promise<User> {
         let user = await this.userRepository.findOneBy({id});
 
-        if (!user) { throw new NotFoundError(`user id with ${id} doesnt exist`) }
-        if (!this.validateName(updateUserDto.name)) { throw new BadRequestError(`name with ${updateUserDto.name} already exist`) }
-        if (!this.validateNickname(updateUserDto.nickname)) { throw new BadRequestError(`name with ${updateUserDto.nickname} already exist`) }
+        let findName = await this.userRepository.findOneBy({name:user.name})
+        if (findName) {
+             throw new BadRequestError(`name with ${updateUserDto.nickname} already exist`) 
+            }
         
         const now = new Date();
         user.updatedAt = now;

@@ -4,8 +4,7 @@ import { UserRepository } from "../../../src/User/UserRepository";
 import { deepEqual, instance, mock, spy, when, verify, reset } from "ts-mockito";
 import { CreateUserDto } from "../../../src/User/dto/createUserDto";
 import { BadRequestError, NotFoundError } from "routing-controllers";
-import { userInfo } from "os";
-import { resourceLimits } from "worker_threads";
+import { UpdateUserDto } from "../../../src/User/dto/updateUserDto";
 
 describe("User Service Test", () => {
 
@@ -13,13 +12,15 @@ describe("User Service Test", () => {
     let userService:UserService;
 
     const now = new Date();
-    const user:User = User.signup(
+    let user:User = User.signup(
         "test name",
         "test nickname",
         "test password",
         now,
         now
         )
+    user.id = 1
+
     
     const createUserDto:CreateUserDto = new CreateUserDto();
     createUserDto.name = "test name";
@@ -96,7 +97,7 @@ describe("User Service Test", () => {
             // 비동기 함수의 에러처리 테스트
             await expect(async () => { 
                 await userService.createUser(dto);
-            }).rejects.toThrowError(new BadRequestError(`name with ${user.nickname} already exist`))
+            }).rejects.toThrowError(new BadRequestError(`nickname with ${user.nickname} already exist`))
             verify(mockedRepository.findOneBy(deepEqual({name:user.name}))).once()
             verify(mockedRepository.findOneBy(deepEqual({nickname:user.nickname}))).once()
         })        
@@ -148,12 +149,23 @@ describe("User Service Test", () => {
     })
 
     describe('userService updateUser method test' , () => {
+        let updateUserDto:UpdateUserDto;
+        let updatedUser:User
+
+        beforeEach(() => {
+            updateUserDto = {nickname:"test update",password:"test update"}
+            updatedUser = {...user,...updateUserDto}
+        })
 
         it('should be a function', async () => {
             expect(typeof userService.updateUser).toBe('function')
         })
 
-        it('should ')
+        it('should call findOneBy twice, call save once', async () => {
+        
+            
+            
+        })
     })
         
 
