@@ -119,4 +119,24 @@ describe('Board Service Test', () => {
 
     })
 
+    describe('boardService findAll method test' , () => {
+
+        it('should be a function', async () => {
+            expect(typeof boardService.findAll).toBe('function')
+        })
+
+        it('should return Board[]', async () => {
+            const boards:Board[] = [board]
+            when(mockedRepository.find()).thenResolve(boards)
+
+            const result = await boardService.findAll();
+
+            expect(result).toBe(boards)
+            verify(mockedRepository.find()).once()
+        })
+
+    })
+
+
+
 })
