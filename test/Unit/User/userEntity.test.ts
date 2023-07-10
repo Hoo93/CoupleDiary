@@ -1,4 +1,3 @@
-import exp = require("constants");
 import { User } from "../../../src/User/User";
 
 describe('User Entity test', () => {
