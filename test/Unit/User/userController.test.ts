@@ -78,7 +78,7 @@ describe("User Controller Test", () => {
 
     })
 
-    describe("findAllUser method test", () => {
+    describe("findAll method test", () => {
 
         it('should have a findAllUser function', async () => {        
             expect(typeof userController.findAllUser).toBe('function')

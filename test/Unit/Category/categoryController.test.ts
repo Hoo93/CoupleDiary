@@ -41,4 +41,23 @@ describe('categoryController test', () => {
         })
 
     })
+
+    describe('findAll test', () => {
+
+        it('should have a findAllUser function', async () => {        
+            expect(typeof categoryController.findAll).toBe('function')
+        })
+    
+        it('should call userService when findAllUser', async () => {
+            const categories:Category[] = [category,category,category]
+            
+            when(mockedService.findAll()).thenResolve(categories)
+            
+            const result = await categoryController.findAll()
+    
+            verify(mockedService.findAll()).once()
+            expect(result).toBe(categories)
+        })
+
+    })
 })
