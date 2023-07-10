@@ -1,8 +1,7 @@
-import Container, { Service } from "typedi";
+import { Service } from "typedi";
 import { AppDataSource } from "../data-source";
 import { User } from "./User";
-import { DataSource, Repository } from "typeorm";
-import { useContainer } from "routing-controllers";
+import { Repository } from "typeorm";
 
 @Service()
 export class UserRepository extends Repository<User> {
@@ -10,5 +9,3 @@ export class UserRepository extends Repository<User> {
         super(User,AppDataSource.createEntityManager());
     }
 }
-
-
