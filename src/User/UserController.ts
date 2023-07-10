@@ -14,7 +14,7 @@ export class UserController {
         private userService:UserService
     ) {}
 
-    @Post('/signup')
+    @Post('/')
     public async createUser(@Body() createUserDto:CreateUserDto) {
         try { 
             return await this.userService.createUser(createUserDto);
