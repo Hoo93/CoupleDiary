@@ -4,8 +4,9 @@ import { BoardRepository } from "../../../src/Board/BoardRepository";
 import { BoardController } from "../../../src/Board/boardController";
 import { BoardService } from "../../../src/Board/boardService";
 import { CreateBoardDto } from "../../../src/Board/dto/createBoardDto";
-import { NotFoundError } from "routing-controllers";
+import { BadRequestError, BodyParam, NotFoundError } from "routing-controllers";
 import { UpdateBoardDto } from "../../../src/Board/dto/updateBoardDto";
+import { UpdateResult } from "typeorm";
 
 
 describe('Board Service Test', () => {
@@ -121,7 +122,7 @@ describe('Board Service Test', () => {
             expect(typeof boardService.findById).toBe('function')
         })
 
-        it('should return user', async () => {
+        it('should return board', async () => {
             when(mockedRepository.findOneBy(deepEqual({id:1}))).thenResolve(board)
             
             const result = await boardService.findById(1)
@@ -158,5 +159,72 @@ describe('Board Service Test', () => {
         })
 
     })
+
+    describe('boardService updateBoard method test' , () => {
+        let updateBoardDto:UpdateBoardDto;
+        let updatedBoard:Board
+
+        beforeEach(() => {
+            updateBoardDto = new UpdateBoardDto();
+            updateBoardDto.title = "test update title";
+            updateBoardDto.content = "test update content";
+            updateBoardDto.categoryId = 123;
+        })
+
+        it('should be a function',async () => {
+            expect(typeof boardService.updateBoard).toBe('function')
+        })
+
+        it('should return board.id', async () => {
+            let updateResult = new UpdateResult()
+            updateResult.affected = 1
+            
+            const mockedUpdateBoardDto = mock(UpdateBoardDto)
+            when(mockedUpdateBoardDto.boardUpdateInfo()).thenReturn(updateBoardDto.boardUpdateInfo(now))
+            let mUpdateBoardDto  = instance(mockedUpdateBoardDto)
+            
+            when(mockedRepository.findOneBy(deepEqual({id:board.id}))).thenResolve(board)
+            when(mockedRepository.update(1,deepEqual(updateBoardDto.boardUpdateInfo(now)))).thenResolve(updateResult)
+
+            const result = await boardService.updateBoard(board.id,mUpdateBoardDto);
+
+            verify(mockedRepository.findOneBy(deepEqual({id:board.id}))).once()
+            verify(mockedRepository.update(deepEqual(board.id),deepEqual(updateBoardDto.boardUpdateInfo(now)))).once()
+            expect(result).toBe(board.id)            
+            
+        })
+
+        it('should throw NotFoundError when board with id doesnt exist', async() => {
+            
+            when(mockedRepository.findOneBy(deepEqual({id:board.id}))).thenReturn(null)
+            
+            await expect( async () => {
+                await boardService.updateBoard(1,updateBoardDto) 
+            }).rejects.toThrowError(new NotFoundError("board with id:1 doesn't exist"))
+            verify(mockedRepository.findOneBy(deepEqual({id:board.id}))).once()
+
+        })
+
+        it('should throw error when updateResult.affected === 0 ', async () => {
+            let updateResult = new UpdateResult()
+            updateResult.affected = 0
+            
+            const mockedUpdateBoardDto = mock(UpdateBoardDto)
+            when(mockedUpdateBoardDto.boardUpdateInfo()).thenReturn(updateBoardDto.boardUpdateInfo(now))
+            let mUpdateBoardDto  = instance(mockedUpdateBoardDto)
+            
+            when(mockedRepository.findOneBy(deepEqual({id:board.id}))).thenResolve(board)
+            when(mockedRepository.update(1,deepEqual(updateBoardDto.boardUpdateInfo(now)))).thenResolve(updateResult)
+
+            
+
+            await expect( async () => {
+                await boardService.updateBoard(board.id,mUpdateBoardDto);
+            }).rejects.toThrowError(new BadRequestError('board update fail'))
+            verify(mockedRepository.findOneBy(deepEqual({id:board.id}))).once()
+            verify(mockedRepository.update(deepEqual(board.id),deepEqual(updateBoardDto.boardUpdateInfo(now)))).once()
+        })
+    })
+
 
 })
