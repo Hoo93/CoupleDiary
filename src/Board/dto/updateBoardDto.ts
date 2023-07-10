@@ -18,6 +18,7 @@ export class UpdateBoardDto  {
         const updateUserInfo = {
             title:this.title,
             content:this.content,
+            categoryId:this.categoryId,
             updatedAt:updatedAt
         }
         return updateUserInfo

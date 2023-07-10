@@ -5,6 +5,7 @@ import { BoardController } from "../../../src/Board/boardController";
 import { BoardService } from "../../../src/Board/boardService";
 import { CreateBoardDto } from "../../../src/Board/dto/createBoardDto";
 import { NotFoundError } from "routing-controllers";
+import { UpdateBoardDto } from "../../../src/Board/dto/updateBoardDto";
 
 
 describe('Board Service Test', () => {
@@ -60,6 +61,27 @@ describe('Board Service Test', () => {
             expect(result.isPublic).toBe(createBoardDto.isPublic)
             expect(result.createdAt).toBe(createBoardDto.createdAt)
             expect(result.updatedAt).toBe(createBoardDto.updatedAt)
+        })
+    })
+
+    describe('updateBoardDto test', () => {
+
+        let updateBoardDto:UpdateBoardDto;
+        let updatedBoard:Board
+
+        beforeEach(() => {
+            updateBoardDto = new UpdateBoardDto();
+            updateBoardDto.title = "test update title";
+            updateBoardDto.content = "test update content";
+            updateBoardDto.categoryId = 123;
+        })
+
+        it('updateBoardDto.boardUpdateInfo should return updateInfo', () => {
+            const updateInfo = updateBoardDto.boardUpdateInfo(now)
+            expect(updateInfo.title).toBe(updateBoardDto.title)
+            expect(updateInfo.content).toBe(updateBoardDto.content)
+            expect(updateInfo.categoryId).toBe(updateBoardDto.categoryId)
+            expect(updateInfo.updatedAt).toBe(now)
         })
     })
 
@@ -136,7 +158,5 @@ describe('Board Service Test', () => {
         })
 
     })
-
-
 
 })
