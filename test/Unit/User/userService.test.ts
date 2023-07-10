@@ -140,7 +140,6 @@ describe("User Service Test", () => {
 
         it('should return User[]', async () => {
             const users:User[] = [createUserDto.toEntity()]
-
             when(mockedRepository.find()).thenResolve(users)
 
             const result = await userService.findAll();
@@ -163,6 +162,13 @@ describe("User Service Test", () => {
 
         it('should be a function',async () => {
             expect(typeof userService.updateUser).toBe('function')
+        })
+
+        it('updateUserDto.createUpdateInfo should return updateInfo', () => {
+            const updateInfo = updateUserDto.createUpdateInfo(now)
+            expect(updateInfo.nickname).toBe(updateUserDto.nickname)
+            expect(updateInfo.password).toBe(updateUserDto.password)
+            expect(updateInfo.updatedAt).toBe(now)
         })
 
         it('should call findOneBy twice, return user.id', async () => {
