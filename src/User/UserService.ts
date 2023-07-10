@@ -50,11 +50,13 @@ export class UserService {
             throw new NotFoundError(`user with id:${id} doesn't exist`)
         }
 
-        let findNickname = await this.userRepository.findOneBy({nickname:updateUserDto.nickname})
-        if (findNickname) {
-             throw new BadRequestError(`nickname with ${updateUserDto.nickname} already exist`) 
-            }
-    
+        if (updateUserDto.nickname && updateUserDto.nickname !== null ) {
+            let findNickname = await this.userRepository.findOneBy({nickname:updateUserDto.nickname})
+            if ( findNickname && findNickname.id !== user.id) {
+                throw new BadRequestError(`nickname with ${updateUserDto.nickname} already exist`) 
+            } 
+        }
+        
         const updateResult = await this.userRepository.update(user.id,updateUserDto.createUpdateInfo());
         if (updateResult.affected === 0) {
             throw new BadRequestError('user update fail')

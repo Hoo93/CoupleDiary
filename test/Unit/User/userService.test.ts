@@ -182,6 +182,7 @@ describe("User Service Test", () => {
             when(mockedUpdateUserDto.createUpdateInfo()).thenReturn(updateUserDto.createUpdateInfo())
             
             let mUpdateUserDto  = instance(mockedUpdateUserDto)
+            mockedUpdateUserDto.nickname = undefined
             
             when(mockedRepository.findOneBy(deepEqual({id:user.id}))).thenResolve(user)
             when(mockedRepository.findOneBy(deepEqual({nickname:mUpdateUserDto.nickname}))).thenReturn(null)
@@ -190,7 +191,7 @@ describe("User Service Test", () => {
             const result = await userService.updateUser(1,mUpdateUserDto);
 
             verify(mockedRepository.findOneBy(deepEqual({id:user.id}))).once()
-            verify(mockedRepository.findOneBy(deepEqual({nickname:mUpdateUserDto.nickname}))).once()
+            verify(mockedRepository.findOneBy(deepEqual({nickname:mUpdateUserDto.nickname}))).never()
             verify(mockedRepository.update(deepEqual(user.id),deepEqual(mUpdateUserDto.createUpdateInfo()))).once()
             expect(result).toBe(user.id)            
             

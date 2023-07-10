@@ -61,9 +61,9 @@ export class UserController {
     public async deleteUser (@Param('id') id:number) {
         try {
             return await this.userService.deleteUser(id)
-        } catch (e) {
-            console.error(e)
-            return e.message
+        } catch(error) {
+            console.error(error);
+            return error.message;
         }
     }
 }
