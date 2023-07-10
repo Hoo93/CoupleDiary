@@ -7,6 +7,7 @@ import { BadRequestError, NotFoundError } from "routing-controllers";
 import { UpdateUserDto } from "../../../src/User/dto/updateUserDto";
 import exp = require("constants");
 import { Not, UpdateResult } from "typeorm";
+import { deprecate } from "util";
 
 describe("User Service Test", () => {
 
@@ -165,15 +166,25 @@ describe("User Service Test", () => {
         })
 
         it('should call findOneBy twice, return user.id', async () => {
+            let updateResult = new UpdateResult()
+            updateResult.affected = 1
+            
+            const mockedUpdateUserDto = mock(UpdateUserDto)
+            when(mockedUpdateUserDto.createUpdateInfo()).thenReturn(updateUserDto.createUpdateInfo())
+            
+            let mUpdateUserDto  = instance(mockedUpdateUserDto)
             
             when(mockedRepository.findOneBy(deepEqual({id:user.id}))).thenResolve(user)
-            when(mockedRepository.findOneBy(deepEqual({nickname:updateUserDto.nickname}))).thenReturn(null)
+            when(mockedRepository.findOneBy(deepEqual({nickname:mUpdateUserDto.nickname}))).thenReturn(null)
+            when(mockedRepository.update(deepEqual(user.id),deepEqual(mUpdateUserDto.createUpdateInfo()))).thenResolve(updateResult)
 
-            const result = await userService.updateUser(1,updateUserDto,now);
+            const result = await userService.updateUser(1,mUpdateUserDto);
 
             verify(mockedRepository.findOneBy(deepEqual({id:user.id}))).once()
-            verify(mockedRepository.findOneBy(deepEqual({nickname:updateUserDto.nickname}))).once()
+            verify(mockedRepository.findOneBy(deepEqual({nickname:mUpdateUserDto.nickname}))).once()
+            verify(mockedRepository.update(deepEqual(user.id),deepEqual(mUpdateUserDto.createUpdateInfo()))).once()
             expect(result).toBe(user.id)            
+            
         })
 
         it('should throw NotFoundError when user with id doesnt exist', async() => {
@@ -181,7 +192,7 @@ describe("User Service Test", () => {
             when(mockedRepository.findOneBy(deepEqual({id:user.id}))).thenReturn(null)
             
             await expect( async () => {
-                await userService.updateUser(1,updateUserDto,now) 
+                await userService.updateUser(1,updateUserDto) 
             }).rejects.toThrowError(new NotFoundError("user with id:1 doesn't exist"))
             verify(mockedRepository.findOneBy(deepEqual({id:user.id}))).once()
 
@@ -195,7 +206,7 @@ describe("User Service Test", () => {
             when(mockedRepository.findOneBy(deepEqual({nickname:updateUserDto.nickname}))).thenResolve(findNickname)
 
             await expect(async () => {
-                await userService.updateUser(1,updateUserDto,now)
+                await userService.updateUser(1,updateUserDto)
             }).rejects.toThrowError(new BadRequestError(`nickname with ${findNickname.nickname} already exist`))
             verify(mockedRepository.findOneBy(deepEqual({id:user.id}))).once()
             verify(mockedRepository.findOneBy(deepEqual({nickname:updateUserDto.nickname}))).once()

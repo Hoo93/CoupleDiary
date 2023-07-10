@@ -9,6 +9,8 @@ import { nextTick } from "process";
 import { Mocker } from "ts-mockito/lib/Mock";
 import exp = require("constants");
 import { NotFoundError } from "routing-controllers";
+import { UpdateUserDto } from "../../../src/User/dto/updateUserDto";
+import { deepEqual } from "assert";
 
 let req = httpMocks.createRequest()
 
@@ -18,9 +20,17 @@ describe("User Controller Test", () => {
     let userController:UserController;
 
     const createUserDto:CreateUserDto = new CreateUserDto();
-    createUserDto.name = "test name",
-    createUserDto.nickname = "test nickname",
-    createUserDto.password = "test password"
+    createUserDto.name = "create test name",
+    createUserDto.nickname = "create test nickname",
+    createUserDto.password = "create test password"
+
+    const user = createUserDto.toEntity()
+    user.id = 1
+
+    const now = new Date();
+    const updateUserDto:UpdateUserDto = new UpdateUserDto();
+    updateUserDto.nickname = "update test nickname"
+    updateUserDto.password = "update test password"
     
     beforeEach(() => {
         mockedService = mock(UserService);
@@ -55,7 +65,7 @@ describe("User Controller Test", () => {
         })
     
         it('should call userService when findUserById', async () => {
-            const user = createUserDto.toEntity()
+            
             when(mockedService.findUserById(1)).thenResolve(user)
     
             let userController = new UserController(instance(mockedService));
@@ -78,8 +88,6 @@ describe("User Controller Test", () => {
             const users:User[] = [createUserDto.toEntity()]
             
             when(mockedService.findAll()).thenResolve(users)
-    
-            let userController = new UserController(instance(mockedService));
             
             const result = await userController.findAllUser()
     
@@ -95,9 +103,17 @@ describe("User Controller Test", () => {
             expect(typeof userController.updateUser).toBe('function')
         })
 
-        // it('should return updatedUser' , async() => {
+        it('should return updatedUser user.id' , async() => {
+            // TO DO controller 부분 리팩토링 ...
+            when(mockedService.updateUser(1,updateUserDto)).thenResolve(1)
 
-        // })
+            const result = await userController.updateUser(1,updateUserDto);
+            
+            verify(mockedService.updateUser(1,updateUserDto,now)).once()
+
+            // expect(result).toBe(1)
+
+        })
 
     
     })

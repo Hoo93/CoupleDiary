@@ -45,7 +45,7 @@ export class UserService {
         return await this.userRepository.find();
     }
 
-    async updateUser(id:number,updateUserDto:UpdateUserDto,updatedAt:Date): Promise<Number> {
+    async updateUser(id:number,updateUserDto:UpdateUserDto): Promise<Number> {
         let user = await this.userRepository.findOneBy({id});
         if (!user) {
             throw new NotFoundError(`user with id:${id} doesn't exist`)
@@ -57,8 +57,13 @@ export class UserService {
             }
     
         try {
-            const updateResult = await this.userRepository.update(user.id,updateUserDto);
-            return user.id;
+            const updateResult = await this.userRepository.update(user.id,updateUserDto.createUpdateInfo());
+            if (updateResult.affected === 1) {
+                return user.id
+            } else {
+                throw new BadRequestError('update fail')
+            }
+            
         } catch (error) {
             console.error(error);
             return error.message;
