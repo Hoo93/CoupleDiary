@@ -5,6 +5,7 @@ import { CreateBoardDto } from "../../../src/Board/dto/createBoardDto";
 import { UpdateBoardDto } from "../../../src/Board/dto/updateBoardDto";
 import { deepEqual } from "assert";
 import { Board } from "../../../src/Board/Board";
+import exp = require("constants");
 
 describe("Board Controller Test", () => {
 
@@ -112,7 +113,25 @@ describe("Board Controller Test", () => {
             expect(result).toBe(1)
         })
     })
-    
+
+    describe("deleteBoard method test", () => {
+
+        it('should have a deleteBoard function', async () => {        
+            expect(typeof boardController.deleteBoard).toBe('function')
+        })
+
+        it('should return nothing', async () => {
+
+            when(mockedService.deleteBoard(board.id)).thenResolve(undefined)
+            const deleteResult = await boardController.deleteBoard(board.id)
+
+            verify(mockedService.deleteBoard(board.id)).once()
+            expect(mockedService.deleteBoard).toBeCalledWith(board.id)
+            expect(deleteResult).toBe(undefined)
+        })
+    })
+
+
 
 
 
