@@ -13,29 +13,34 @@ describe("User Service Test", () => {
 
     let mockedRepository:UserRepository;
     let userService:UserService;
-
+    let user:User
     const now = new Date();
-    let user:User = User.signup(
-        "test name",
-        "test nickname",
-        "test password",
-        now,
-        now
-        )
-    user.id = 1
-
-    
-    const createUserDto:CreateUserDto = new CreateUserDto();
-    createUserDto.name = "test name";
-    createUserDto.nickname = "test nickname",
-    createUserDto.password = "test password"
 
     beforeEach( () => {
         mockedRepository = mock(UserRepository)
         userService = new UserService(instance(mockedRepository))
+        
+        user = User.signup(
+            "test name",
+            "test nickname",
+            "test password",
+            now,
+            now
+            )
+        user.id = 1
     })
+    let createUserDto:CreateUserDto
 
     describe('userService createUser test', () => {
+
+        beforeEach( () => {
+            createUserDto = new CreateUserDto();
+            createUserDto.name = "test name";
+            createUserDto.nickname = "test nickname",
+            createUserDto.password = "test password"
+
+        })
+
         it('should be a function', () => {
             expect(typeof userService.createUser).toBe('function');
         })
@@ -208,18 +213,49 @@ describe("User Service Test", () => {
             const findNickname = new User();
             findNickname.nickname = updateUserDto.nickname
             
-            when(mockedRepository.findOneBy(deepEqual({id:user.id}))).thenResolve(user)
+            when(mockedRepository.findOneBy(deepEqual({id:1}))).thenResolve(user)
             when(mockedRepository.findOneBy(deepEqual({nickname:updateUserDto.nickname}))).thenResolve(findNickname)
 
             await expect(async () => {
                 await userService.updateUser(1,updateUserDto)
             }).rejects.toThrowError(new BadRequestError(`nickname with ${findNickname.nickname} already exist`))
-            verify(mockedRepository.findOneBy(deepEqual({id:user.id}))).once()
+            verify(mockedRepository.findOneBy(deepEqual({id:1}))).once()
             verify(mockedRepository.findOneBy(deepEqual({nickname:updateUserDto.nickname}))).once()
             
         })
 
     })
+
+    describe('userService deleteUser method test' , () => {
+    
+        it('should be a function',async () => {
+            expect(typeof userService.deleteUser).toBe('function')
+        })
+
+        it('should return deactivatedUser', async () => {
+            when(mockedRepository.findOneBy(deepEqual({id:1}))).thenResolve(user)
+            when(mockedRepository.save(user)).thenResolve(user)
+            user.deactivate()
+
+            const result = await userService.deleteUser(1)
+            
+            verify(mockedRepository.findOneBy(deepEqual({id:1}))).once()
+            verify(mockedRepository.save(user)).once()
+            expect(result.isActivated).toBe(false)
+        })
+
+        it('should throw NotFoundError when user with id doesnt exist', async() => {
+            
+            when(mockedRepository.findOneBy(deepEqual({id:1}))).thenReturn(null)
+            
+            await expect( async () => {
+                await userService.deleteUser(1) 
+            }).rejects.toThrowError(new NotFoundError("user with id:1 doesn't exist"))
+            verify(mockedRepository.findOneBy(deepEqual({id:1}))).once()
+
+        })
+    })
+
         
 
     

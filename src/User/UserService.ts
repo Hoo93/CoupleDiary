@@ -64,8 +64,15 @@ export class UserService {
     
     }
 
-    async deleteUser(id:number) {
-        
+    async deleteUser(id:number):Promise<User> {
+        let user = await this.userRepository.findOneBy({id});
+        if (!user) {
+            throw new NotFoundError(`user with id:${id} doesn't exist`)
+        }
+
+        user.deactivate()
+        const deactivatedUser = await this.userRepository.save(user);
+        return deactivatedUser;
     }
 
 
