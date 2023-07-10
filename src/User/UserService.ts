@@ -4,7 +4,6 @@ import { User } from "./User";
 import { BadRequestError, NotFoundError } from "routing-controllers";
 import { UserRepository } from "./UserRepository";
 import { UpdateUserDto } from "./dto/updateUserDto";
-import { UpdateResult } from "typeorm";
 
 @Service()
 export class UserService {

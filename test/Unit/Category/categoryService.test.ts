@@ -3,7 +3,8 @@ import { CategoryRepository } from "../../../src/Category/CategoryRepository";
 import { CategoryService } from "../../../src/Category/CategoryService"
 import { CategoryDto } from "../../../src/Category/dto/CategoryDto";
 import { Category } from "../../../src/Category/Category";
-import { BadRequestError } from "routing-controllers";
+import { BadRequestError, NotFoundError } from "routing-controllers";
+import exp = require("constants");
 
 describe('categoryService unit test', () => {
 
@@ -41,11 +42,11 @@ describe('categoryService unit test', () => {
         let mockedCategoryDto:CategoryDto;
         let category:Category;
         category = categoryDto.toEntity();
+        category.id = 1
         
         beforeEach( () => {
             mockedCategoryDto = mock(CategoryDto);
             when(mockedCategoryDto.toEntity()).thenReturn(category)
-            
             
         })
         
@@ -55,7 +56,6 @@ describe('categoryService unit test', () => {
 
         it('should return category', async () => {
             
-
             when(mockedRepository.findOneBy({name:category.name})).thenReturn(null)
             when(mockedRepository.save(deepEqual(category))).thenResolve(category)
 
@@ -75,8 +75,61 @@ describe('categoryService unit test', () => {
             }).rejects.toThrowError(new BadRequestError(`category name with ${category.name} already exist`))
             verify(mockedRepository.findOneBy(deepEqual({name:category.name}))).once()
         })
+    })
 
+    describe('categoryService findCategoryById test', () => {
 
+        let category:Category = new Category();
+        category.id = 1;
+        category.name = "test category name";
+        category.createdAt = now;
+        category.updatedAt = now;
 
+        it('should be a fucntion', async () => {
+            expect(typeof categoryService.findCategoryById).toBe('function');
+        })
+
+        it('should return category', async () => {
+            when(mockedRepository.findOneBy(deepEqual({id:category.id}))).thenResolve(category)
+
+            const result = await categoryService.findCategoryById(1)
+
+            verify(mockedRepository.findOneBy(deepEqual({id:category.id}))).once()
+            expect(result).toBe(category)
+        })
+
+        it('should throw NotFoundError', async () => {
+            when(mockedRepository.findOneBy(deepEqual({id:1}))).thenReturn(null)
+        
+            await expect(async () => {
+                await categoryService.findCategoryById(1)
+            }).rejects.toThrowError(new NotFoundError(`Category with id: ${1} doesn't exist`))
+            verify(mockedRepository.findOneBy(deepEqual({id:1}))).once()
+        })
+    })
+
+    describe('categoryService findAll test', () => {
+
+        let category:Category = new Category();
+        category.id = 1;
+        category.name = "test category name";
+        category.createdAt = now;
+        category.updatedAt = now;
+
+        it('should be a fucntion', async () => {
+            expect(typeof categoryService.findAll).toBe('function');
+        })
+
+        it('should return Category[]' , async () => {
+
+            const categories:Category[] = [ category,category,category ]
+
+            when(mockedRepository.find()).thenResolve(categories)
+
+            const result = await categoryService.findAll();
+
+            expect(result).toBe(categories)
+            verify(mockedRepository.find()).once()
+        })
     })
 })
