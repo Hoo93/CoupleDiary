@@ -3,13 +3,13 @@ import { CategoryRepository } from "../../../src/Category/CategoryRepository";
 import { CategoryService } from "../../../src/Category/CategoryService"
 import { CategoryDto } from "../../../src/Category/dto/CategoryDto";
 import { Category } from "../../../src/Category/Category";
+import { BadRequestError } from "routing-controllers";
 
 describe('categoryService unit test', () => {
 
     let categoryService:CategoryService;
     let mockedRepository:CategoryRepository;
     let categoryDto:CategoryDto;
-    let mockedCategoryDto:CategoryDto;
 
     const now = new Date();
 
@@ -20,7 +20,6 @@ describe('categoryService unit test', () => {
     })
 
     describe('categoryDto test', () => {
-        mockedCategoryDto = mock(CategoryDto);
         categoryDto = new CategoryDto();
         categoryDto.name = "test category name"
 
@@ -31,16 +30,23 @@ describe('categoryService unit test', () => {
 
             expect(spyCategoryDtoToEntity).toBeCalledTimes(1);
             expect(spyCategoryDtoToEntity).toBeCalledWith(categoryDto.name,now);
-
         })
     })
 
     describe('createCategory test', () => {
 
+        categoryDto = new CategoryDto();
+        categoryDto.name = "test category name"
+        
+        let mockedCategoryDto:CategoryDto;
+        let category:Category;
+        category = categoryDto.toEntity();
+        
         beforeEach( () => {
             mockedCategoryDto = mock(CategoryDto);
-            categoryDto = new CategoryDto();
-            categoryDto.name = "test category name"
+            when(mockedCategoryDto.toEntity()).thenReturn(category)
+            
+            
         })
         
         it('createCategory should be a function', () => {
@@ -48,8 +54,7 @@ describe('categoryService unit test', () => {
         })
 
         it('should return category', async () => {
-            const category = categoryDto.toEntity();
-            when(mockedCategoryDto.toEntity()).thenReturn(category)
+            
 
             when(mockedRepository.findOneBy({name:category.name})).thenReturn(null)
             when(mockedRepository.save(deepEqual(category))).thenResolve(category)
@@ -60,7 +65,14 @@ describe('categoryService unit test', () => {
             verify(mockedRepository.save(deepEqual(category))).once()
             expect(result).toBe(category)
 
+        })
 
+        it('should throw error if same category name in DB', async () => {
+            when(mockedRepository.findOneBy(deepEqual({name:category.name}))).thenResolve(new Category())
+
+            await expect( async () => {
+                await categoryService.createCategory(instance(mockedCategoryDto))
+            }).rejects.toThrowError(new BadRequestError(`category name with ${category.name} already exist`))
         })
 
 
