@@ -1,4 +1,4 @@
-import { Body, Get, JsonController, Param, Patch, Post } from "routing-controllers";
+import { Body, Delete, Get, JsonController, Param, Patch, Post } from "routing-controllers";
 import { Inject, Service } from "typedi";
 import { CategoryService } from "./CategoryService";
 import { CategoryDto } from "./dto/CategoryDto";
@@ -37,13 +37,23 @@ export class CategoryController {
     public async updateCategory(
         @Param('id') id:number,
         @Body() categoryDto:CategoryDto):Promise<Number> {
-            try {
-                return await this.categoryService.updateCategory(id,categoryDto);
-            } catch(error) {
-                console.error(error);
-                return error.message;
-            }
+        try {
+            return await this.categoryService.updateCategory(id,categoryDto);
+        } catch(error) {
+            console.error(error);
+            return error.message;
         }
+    }
+    
+    @Delete('/:id')
+    public async deleteCategory(@Param('id') id:number) {
+        try {
+            return await this.categoryService.deleteCategory(id);
+        } catch(error) {
+            console.error(error);
+            return error.message;
+        }
+    }
 
 
 }
