@@ -1,12 +1,9 @@
 import { Inject, Service } from "typedi";
 import { CategoryRepository } from "./CategoryRepository";
-import { Serializer } from "v8";
 import { CategoryDto } from "./dto/CategoryDto";
 import { BadRequestError, NotFoundError } from "routing-controllers";
-import { copyFileSync } from "fs";
 import { Category } from "./Category";
 import { DeleteResult, UpdateResult } from "typeorm";
-import { notDeepStrictEqual } from "assert";
 
 @Service()
 export class CategoryService {
@@ -72,7 +69,6 @@ export class CategoryService {
         if ( deleteResult.affected === 0) {
             throw new BadRequestError('category delete fail')
         }
-        
     }
 
 

@@ -80,4 +80,20 @@ describe('categoryController test', () => {
         })
 
     })
+
+    describe("updateCategory method test", () => {
+
+        it('should have a updateCategory function', async () => {        
+            expect(typeof categoryController.updateCategory).toBe('function')
+        })
+
+        it('should return updatedUser user.id' , async() => {
+            when(mockedService.updateCategory(deepEqual(category.id),deepEqual(categoryDto))).thenResolve(1)
+
+            const result = await categoryController.updateCategory(1,categoryDto);
+            
+            verify(mockedService.updateCategory(deepEqual(category.id),deepEqual(categoryDto))).once()
+            expect(result).toBe(1)
+        })
+    })
 })
