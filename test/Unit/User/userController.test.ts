@@ -118,6 +118,15 @@ describe("User Controller Test", () => {
         it('should have a deleteUser function', async () => {        
             expect(typeof userController.deleteUser).toBe('function')
         })
+
+        it('should return deactivatedUser', async () => {
+            user.deactivate()
+            when(mockedService.deleteUser(1)).thenResolve(user)
+            const deactivatedUser = await userController.deleteUser(1)
+
+            expect(deactivatedUser).toBe(user)
+            expect(deactivatedUser.isActivated).toBe(false)
+        })
     })
 
 })
