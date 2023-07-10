@@ -12,7 +12,7 @@ export class UserService {
         private userRepository:UserRepository
     ) {}
 
-    async createUser (createUserDto:CreateUserDto):Promise<User> {
+    public async createUser (createUserDto:CreateUserDto):Promise<User> {
         const user = createUserDto.toEntity();
 
         if (await this.userRepository.findOneBy({name:user.name})) {
@@ -32,7 +32,7 @@ export class UserService {
         
     }
 
-    async findUserById (id:number): Promise<User> {
+    public async findUserById (id:number): Promise<User> {
         const user = await this.userRepository.findOneBy({id})
         if (!user) {
             throw new NotFoundError(`user with ${id} doesn't exist`)
@@ -40,11 +40,11 @@ export class UserService {
         return user
     }
 
-    async findAll():Promise<User[]> {
+    public async findAll():Promise<User[]> {
         return await this.userRepository.find();
     }
 
-    async updateUser(id:number,updateUserDto:UpdateUserDto): Promise<Number> {
+    public async updateUser(id:number,updateUserDto:UpdateUserDto): Promise<Number> {
         let user = await this.userRepository.findOneBy({id});
         if (!user) {
             throw new NotFoundError(`user with id:${id} doesn't exist`)
@@ -65,7 +65,7 @@ export class UserService {
     
     }
 
-    async deleteUser(id:number):Promise<User> {
+    public async deleteUser(id:number):Promise<User> {
         let user = await this.userRepository.findOneBy({id});
         if (!user) {
             throw new NotFoundError(`user with id:${id} doesn't exist`)

@@ -2,7 +2,8 @@ import { Inject, Service } from "typedi";
 import { BoardRepository } from "./BoardRepository";
 import { CreateBoardDto } from "./dto/createBoardDto";
 import { Board } from "./Board";
-import { BadRequestError } from "routing-controllers";
+import { BadRequestError, NotFoundError } from "routing-controllers";
+import { UpdateBoardDto } from "./dto/updateBoardDto";
 
 @Service()
 export class BoardService {
@@ -11,7 +12,7 @@ export class BoardService {
         private boardRepository:BoardRepository
     ) {}
 
-    async createBoard (createBoardDto:CreateBoardDto):Promise<Board> {
+    public async createBoard (createBoardDto:CreateBoardDto):Promise<Board> {
         const board = createBoardDto.toEntity();
 
         try {
@@ -20,10 +21,20 @@ export class BoardService {
         } catch(error) {
             console.error("error on save :",error);
             return error.message;
-        }
-        
+        }   
     }
 
+    public async findById (id:number): Promise<Board> {
+        const board = await this.boardRepository.findOneBy({id})
+        if (!board) {
+            throw new NotFoundError(`board with ${id} doesn't exist`)
+        }
+        return board
+    }
+
+    public async findAll():Promise<Board[]> {
+        return await this.boardRepository.find();
+    }
 
 
 }
