@@ -36,5 +36,18 @@ export class BoardService {
         return await this.boardRepository.find();
     }
 
+    public async updateBoard(id:number,updateBoardDto:UpdateBoardDto): Promise<Number> {
+        let board = await this.boardRepository.findOneBy({id});
+        if (!board) {
+            throw new NotFoundError(`board with id:${id} doesn't exist`)
+        }
+        
+        const updateResult = await this.boardRepository.update(board.id,updateBoardDto.boardUpdateInfo());
+        if (updateResult.affected === 0) {
+            throw new BadRequestError('board update fail')
+        }
+        return board.id;
+    }
+
 
 }
