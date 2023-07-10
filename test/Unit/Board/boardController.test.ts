@@ -46,7 +46,7 @@ describe("Board Controller Test", () => {
             expect(typeof boardController.createBoard).toBe('function')
         })
 
-        it('should call userService when createBoard', async () => {
+        it('should call boardService when createBoard', async () => {
             when(mockedService.createBoard(createBoardDto)).thenResolve(board)
     
             let boardController = new BoardController(instance(mockedService));
@@ -64,7 +64,7 @@ describe("Board Controller Test", () => {
             expect(typeof boardController.findById).toBe('function')
         })
     
-        it('should call userService when findById', async () => {
+        it('should call boardService when findById', async () => {
             
             when(mockedService.findById(board.id)).thenResolve(board)
     
@@ -84,7 +84,7 @@ describe("Board Controller Test", () => {
             expect(typeof boardController.findAll).toBe('function')
         })
     
-        it('should call userService when findAll', async () => {
+        it('should call boardService when findAll', async () => {
             const boards:Board[] = [board]
             
             when(mockedService.findAll()).thenResolve(boards)
@@ -95,6 +95,22 @@ describe("Board Controller Test", () => {
             expect(result).toBe(boards)
         })
 
+    })
+
+    describe("updateBoard method test", () => {
+
+        it('should have a updateBoard function', async () => {        
+            expect(typeof boardController.updateBoard).toBe('function')
+        })
+
+        it('should return updateBoard board.id' , async() => {
+            when(mockedService.updateBoard(1,updateBoardDto)).thenResolve(1)
+
+            const result = await boardController.updateBoard(1,updateBoardDto);
+            
+            verify(mockedService.updateBoard(1,updateBoardDto)).once()
+            expect(result).toBe(1)
+        })
     })
 
 

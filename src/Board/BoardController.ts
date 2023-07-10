@@ -1,9 +1,10 @@
-import { Body, Get, JsonController, Param, Post } from "routing-controllers";
+import { Body, Get, JsonController, Param, Patch, Post } from "routing-controllers";
 import { Inject, Service } from "typedi";
 import { BoardService } from "./boardService";
 import { CreateBoardDto } from "./dto/createBoardDto";
 import { Category } from "../Category/Category";
 import { Board } from "./Board";
+import { UpdateBoardDto } from "./dto/updateBoardDto";
 
 @JsonController('board')
 @Service()
@@ -42,6 +43,19 @@ export class BoardController {
             return error.message
         }
     }
+
+    @Patch('/:id')
+    public async updateBoard(
+        @Param('/id') id:number,
+        @Body() updateBoardDto:UpdateBoardDto) {
+            try {
+                return await this.boardService.updateBoard(id,updateBoardDto);
+            } catch (error) {
+                console.error("controller error:",error)
+                return error.message
+            }
+        }
+
 
 
 }
