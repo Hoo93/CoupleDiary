@@ -7,8 +7,8 @@ export class CategoryDto {
     @MinLength(4,{message:'category name must be longer than 4'})
     name:string
 
-    public toEntity(name:string,now:Date = new Date()) {
-        const category = Category.createCategory(name,now);
+    public toEntity(now:Date = new Date()) {
+        const category = Category.createCategory(this.name,now);
         return category;
     }
 

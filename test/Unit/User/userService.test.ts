@@ -5,9 +5,7 @@ import { deepEqual, instance, mock, spy, when, verify, reset } from "ts-mockito"
 import { CreateUserDto } from "../../../src/User/dto/createUserDto";
 import { BadRequestError, NotFoundError } from "routing-controllers";
 import { UpdateUserDto } from "../../../src/User/dto/updateUserDto";
-import exp = require("constants");
-import { Not, UpdateResult } from "typeorm";
-import { deprecate } from "util";
+import { UpdateResult } from "typeorm";
 
 describe("User Service Test", () => {
 
