@@ -4,7 +4,7 @@ import { CategoryService } from "../../../src/Category/CategoryService"
 import { CategoryDto } from "../../../src/Category/dto/CategoryDto";
 import { Category } from "../../../src/Category/Category";
 import { BadRequestError, NotFoundError } from "routing-controllers";
-import { UpdateResult } from "typeorm";
+import { DeleteResult, UpdateResult } from "typeorm";
 
 describe('categoryService unit test', () => {
 
@@ -95,11 +95,11 @@ describe('categoryService unit test', () => {
         })
 
         it('should return category', async () => {
-            when(mockedRepository.findOneBy(deepEqual({id:category.id}))).thenResolve(category)
+            when(mockedRepository.findOneBy(deepEqual(deepEqual({id:category.id})))).thenResolve(category)
 
             const result = await categoryService.findCategoryById(1)
 
-            verify(mockedRepository.findOneBy(deepEqual({id:category.id}))).once()
+            verify(mockedRepository.findOneBy(deepEqual(deepEqual({id:category.id})))).once()
             expect(result).toBe(category)
         })
 
@@ -182,6 +182,38 @@ describe('categoryService unit test', () => {
             verify(mockedRepository.findOneBy(deepEqual({name:categoryDto.name}))).once()
         })
 
+    })
 
+    describe('categoryService deleteCategory method test' , () => {
+    
+        it('should be a function',async () => {
+            expect(typeof categoryService.deleteCategory).toBe('function')
+        })
+
+        it('should throw NotFoundError when user with id doesnt exist', async() => {
+            
+            when(mockedRepository.findOneBy(deepEqual({id:1}))).thenReturn(null)
+            
+            await expect( async () => {
+                await categoryService.deleteCategory(1) 
+            }).rejects.toThrowError(new NotFoundError("category with id:1 doesn't exist"))
+            verify(mockedRepository.findOneBy(deepEqual({id:1}))).once()
+
+        })
+
+        it('should return nothing' , async () => {
+            let deleteResult = new DeleteResult();
+            deleteResult.affected = 1;
+
+            when(mockedRepository.findOneBy(deepEqual({id:1}))).thenResolve(category)
+            when(mockedRepository.delete(deepEqual({id:category.id}))).thenResolve(deleteResult)
+
+            const result = await categoryService.deleteCategory(category.id);
+
+            verify(mockedRepository.findOneBy(deepEqual({id:category.id}))).once()
+            verify(mockedRepository.delete(deepEqual({id:category.id}))).once()
+            expect(result).toBe(undefined)
+
+        })
     })
 })

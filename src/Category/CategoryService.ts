@@ -5,7 +5,7 @@ import { CategoryDto } from "./dto/CategoryDto";
 import { BadRequestError, NotFoundError } from "routing-controllers";
 import { copyFileSync } from "fs";
 import { Category } from "./Category";
-import { UpdateResult } from "typeorm";
+import { DeleteResult, UpdateResult } from "typeorm";
 import { notDeepStrictEqual } from "assert";
 
 @Service()
@@ -63,12 +63,12 @@ export class CategoryService {
     }
 
     public async deleteCategory(id:number):Promise<void> {
-        const category = await this.categoryRepository.findOneBy({id});
+        const category:Category = await this.categoryRepository.findOneBy({id});
         if ( !category ) {
             throw new NotFoundError(`category with id:${id} doesn't exist`)
         }
 
-        const deleteResult = await this.categoryRepository.delete({id});
+        const deleteResult:DeleteResult = await this.categoryRepository.delete({id});
         if ( deleteResult.affected === 0) {
             throw new BadRequestError('category delete fail')
         }
