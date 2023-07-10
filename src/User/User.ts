@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, Unique, OneToMany } from "typeorm"
 import { BaseTimeEntity } from "../entity/BaseTimeEntity";
 import { userInfo } from "os";
+import { Board } from "../Board/Board";
 
 @Entity()
 @Unique(['name'])
@@ -18,6 +19,9 @@ export class User extends BaseTimeEntity {
 
     @Column()
     nickname:string;
+
+    @OneToMany(() => Board, (boards) => boards.user)
+    boards:Board;
 
     constructor() {
         super();
