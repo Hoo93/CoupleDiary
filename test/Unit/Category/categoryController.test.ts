@@ -3,7 +3,6 @@ import { CategoryController } from "../../../src/Category/CategoryController"
 import { CategoryService } from "../../../src/Category/CategoryService";
 import { CategoryDto } from "../../../src/Category/dto/CategoryDto";
 import { Category } from "../../../src/Category/Category";
-import exp = require("constants");
 
 
 describe('categoryController test', () => {
@@ -94,6 +93,21 @@ describe('categoryController test', () => {
             
             verify(mockedService.updateCategory(deepEqual(category.id),deepEqual(categoryDto))).once()
             expect(result).toBe(1)
+        })
+    })
+
+    describe("deleteCategory method test", () => {
+
+        it('should have a deleteCategory function', async () => {        
+            expect(typeof categoryController.deleteCategory).toBe('function')
+        })
+
+        it('should return nothing', async () => {
+            when(mockedService.deleteCategory(deepEqual(category.id))).thenReturn(undefined)
+            const result = await categoryController.deleteCategory(1)
+
+            expect(result).toBe(undefined)
+            verify(mockedService.deleteCategory(deepEqual(category.id))).once()
         })
     })
 })
