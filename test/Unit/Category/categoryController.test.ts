@@ -60,4 +60,24 @@ describe('categoryController test', () => {
         })
 
     })
+
+    describe("findCategoryById method test", () => {
+
+        it('should have a findUserById function', async () => {        
+            expect(typeof categoryController.findCategoryById).toBe('function')
+        })
+    
+        it('should call categoryService when findUserById', async () => {
+            
+            when(mockedService.findCategoryById(1)).thenResolve(category)
+    
+            let categoryController = new CategoryController(instance(mockedService));
+            
+            const result = await categoryController.findCategoryById(1)
+    
+            verify(mockedService.findCategoryById(1)).once()
+            expect(result).toBe(category)
+        })
+
+    })
 })
