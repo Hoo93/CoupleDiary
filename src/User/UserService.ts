@@ -56,19 +56,16 @@ export class UserService {
              throw new BadRequestError(`nickname with ${updateUserDto.nickname} already exist`) 
             }
     
-        try {
-            const updateResult = await this.userRepository.update(user.id,updateUserDto.createUpdateInfo());
-            if (updateResult.affected === 1) {
-                return user.id
-            } else {
-                throw new BadRequestError('update fail')
-            }
-            
-        } catch (error) {
-            console.error(error);
-            return error.message;
+        const updateResult = await this.userRepository.update(user.id,updateUserDto.createUpdateInfo());
+        if (updateResult.affected === 0) {
+            throw new BadRequestError('update fail')
         }
+        return user.id;
+    
+    }
 
+    async deleteUser(id:number) {
+        
     }
 
 

@@ -104,22 +104,21 @@ describe("User Controller Test", () => {
         })
 
         it('should return updatedUser user.id' , async() => {
-            // TO DO controller 부분 리팩토링 ...
             when(mockedService.updateUser(1,updateUserDto)).thenResolve(1)
 
             const result = await userController.updateUser(1,updateUserDto);
             
-            verify(mockedService.updateUser(1,updateUserDto,now)).once()
-
-            // expect(result).toBe(1)
-
+            verify(mockedService.updateUser(1,updateUserDto)).once()
+            expect(result).toBe(1)
         })
-
-    
     })
 
+    describe("deleteUser method test", () => {
 
-
+        it('should have a deleteUser function', async () => {        
+            expect(typeof userController.deleteUser).toBe('function')
+        })
+    })
 
 })
 
