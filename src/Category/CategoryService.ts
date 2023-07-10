@@ -6,6 +6,7 @@ import { BadRequestError, NotFoundError } from "routing-controllers";
 import { copyFileSync } from "fs";
 import { Category } from "./Category";
 import { UpdateResult } from "typeorm";
+import { notDeepStrictEqual } from "assert";
 
 @Service()
 export class CategoryService {
@@ -59,6 +60,19 @@ export class CategoryService {
             throw new BadRequestError('category update fail')
         }
         return id;
+    }
+
+    public async deleteCategory(id:number):Promise<void> {
+        const category = await this.categoryRepository.findOneBy({id});
+        if ( !category ) {
+            throw new NotFoundError(`category with id:${id} doesn't exist`)
+        }
+
+        const deleteResult = await this.categoryRepository.delete({id});
+        if ( deleteResult.affected === 0) {
+            throw new BadRequestError('category delete fail')
+        }
+        
     }
 
 
