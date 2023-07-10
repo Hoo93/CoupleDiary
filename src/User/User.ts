@@ -31,6 +31,7 @@ export class User extends BaseTimeEntity {
         user.password = password;
         user.createdAt = createdAt;
         user.updatedAt = updatedAt;
+        user.isActivated = true
         return user
     }
 
