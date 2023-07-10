@@ -23,7 +23,7 @@ export class UserService {
            }   
         
         try {
-            const result = await this.userRepository.save(createUserDto.toEntity())
+            const result = await this.userRepository.save(user)
             return result
         } catch(error) {
             console.error("error on save :",error);
