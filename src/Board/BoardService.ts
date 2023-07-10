@@ -1,9 +1,10 @@
 import { Inject, Service } from "typedi";
-import { BoardRepository } from "./BoardRepository";
 import { CreateBoardDto } from "./dto/createBoardDto";
 import { Board } from "./Board";
 import { BadRequestError, NotFoundError } from "routing-controllers";
 import { UpdateBoardDto } from "./dto/updateBoardDto";
+import { DeleteResult } from "typeorm";
+import { BoardRepository } from "./BoardRepository";
 
 @Service()
 export class BoardService {
@@ -47,6 +48,18 @@ export class BoardService {
             throw new BadRequestError('board update fail')
         }
         return board.id;
+    }
+
+    public async deleteBoard(id:number):Promise<void> {
+        const board:Board = await this.boardRepository.findOneBy({id});
+        if ( !board ) {
+            throw new NotFoundError(`board with id:${id} doesn't exist`)
+        }
+
+        const deleteResult:DeleteResult = await this.boardRepository.delete({id});
+        if ( deleteResult.affected === 0) {
+            throw new BadRequestError('board delete fail')
+        }
     }
 
 

@@ -6,7 +6,7 @@ import { BoardService } from "../../../src/Board/boardService";
 import { CreateBoardDto } from "../../../src/Board/dto/createBoardDto";
 import { BadRequestError, BodyParam, NotFoundError } from "routing-controllers";
 import { UpdateBoardDto } from "../../../src/Board/dto/updateBoardDto";
-import { UpdateResult } from "typeorm";
+import { DeleteResult, UpdateResult } from "typeorm";
 
 
 describe('Board Service Test', () => {
@@ -225,6 +225,41 @@ describe('Board Service Test', () => {
             verify(mockedRepository.update(deepEqual(board.id),deepEqual(updateBoardDto.boardUpdateInfo(now)))).once()
         })
     })
+
+    describe('boardService deleteBoard method test' , () => {
+    
+        it('should be a function',async () => {
+            expect(typeof boardService.deleteBoard).toBe('function')
+        })
+
+        it('should throw NotFoundError when user with id doesnt exist', async() => {
+            
+            when(mockedRepository.findOneBy(deepEqual({id:board.id}))).thenReturn(null)
+            
+            await expect( async () => {
+                await boardService.deleteBoard(board.id) 
+            }).rejects.toThrowError(new NotFoundError(`board with id:${board.id} doesn't exist`))
+            verify(mockedRepository.findOneBy(deepEqual({id:board.id}))).once()
+
+        })
+
+        it('should return nothing' , async () => {
+            let deleteResult = new DeleteResult();
+            deleteResult.affected = 1;
+
+            when(mockedRepository.findOneBy(deepEqual({id:board.id}))).thenResolve(board)
+            when(mockedRepository.delete(deepEqual({id:board.id}))).thenResolve(deleteResult)
+
+            const result = await boardService.deleteBoard(board.id);
+
+            verify(mockedRepository.findOneBy(deepEqual({id:board.id}))).once()
+            verify(mockedRepository.delete(deepEqual({id:board.id}))).once()
+            expect(result).toBe(undefined)
+
+        })
+    })
+
+
 
 
 })
