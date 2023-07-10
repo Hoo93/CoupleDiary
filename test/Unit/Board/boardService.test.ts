@@ -4,6 +4,7 @@ import { BoardRepository } from "../../../src/Board/BoardRepository";
 import { BoardController } from "../../../src/Board/boardController";
 import { BoardService } from "../../../src/Board/boardService";
 import { CreateBoardDto } from "../../../src/Board/dto/createBoardDto";
+import { NotFoundError } from "routing-controllers";
 
 
 describe('Board Service Test', () => {
@@ -90,6 +91,32 @@ describe('Board Service Test', () => {
             verify(mockedRepository.save(deepEqual(board))).once()
         })
     
+    })
+
+    describe('boardService findUserById test', () => {
+        
+        it('should be a function', async () => {
+            expect(typeof boardService.findById).toBe('function')
+        })
+
+        it('should return user', async () => {
+            when(mockedRepository.findOneBy(deepEqual({id:1}))).thenResolve(board)
+            
+            const result = await boardService.findById(1)
+            
+            expect(result).toBe(board)
+            verify(mockedRepository.findOneBy(deepEqual({id:1}))).once()
+        })
+
+        it('should throw NotFoundError', async () => {
+            when(mockedRepository.findOneBy(deepEqual({id:1}))).thenReturn(null)
+        
+            await expect(async () => {
+                await boardService.findById(1)
+            }).rejects.toThrowError(NotFoundError)
+            verify(mockedRepository.findOneBy(deepEqual({id:1}))).once()
+        })
+
     })
 
 })

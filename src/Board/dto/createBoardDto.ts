@@ -3,7 +3,6 @@ import { BaseTimeEntity } from "../../entity/BaseTimeEntity";
 import { IsBoolean, IsInt, IsNotEmpty, MinLength, min } from "class-validator";
 import { Board } from "../Board";
 
-
 export class CreateBoardDto extends BaseTimeEntity {
     
     @IsNotEmpty()
