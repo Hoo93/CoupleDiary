@@ -73,6 +73,7 @@ describe('categoryService unit test', () => {
             await expect( async () => {
                 await categoryService.createCategory(instance(mockedCategoryDto))
             }).rejects.toThrowError(new BadRequestError(`category name with ${category.name} already exist`))
+            verify(mockedRepository.findOneBy(deepEqual({name:category.name}))).once()
         })
 
 

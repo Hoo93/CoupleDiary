@@ -2,8 +2,9 @@ import { Inject, Service } from "typedi";
 import { CategoryRepository } from "./CategoryRepository";
 import { Serializer } from "v8";
 import { CategoryDto } from "./dto/CategoryDto";
-import { BadRequestError } from "routing-controllers";
+import { BadRequestError, NotFoundError } from "routing-controllers";
 import { copyFileSync } from "fs";
+import { Category } from "./Category";
 
 @Service()
 export class CategoryService {
@@ -27,7 +28,19 @@ export class CategoryService {
             console.error(error);
             return error.message
         }
-
     }
+
+    async findAll():Promise<Category[]> {
+        return this.categoryRepository.find();
+    }
+
+    async findCategoryById(id):Promise<Category> {
+        const category:Category = await this.categoryRepository.findOneBy({id});
+        if (!category) {
+            throw new NotFoundError(`Category with id: ${id} doesn't exist`)
+        }
+        return category
+    }
+
 
 }
