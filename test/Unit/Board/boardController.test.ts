@@ -3,8 +3,10 @@ import { BoardController } from "../../../src/Board/boardController";
 import { BoardService } from "../../../src/Board/boardService";
 import { CreateBoardDto } from "../../../src/Board/dto/createBoardDto";
 import { UpdateBoardDto } from "../../../src/Board/dto/updateBoardDto";
+import { deepEqual } from "assert";
+import { Board } from "../../../src/Board/Board";
 
-describe("User Controller Test", () => {
+describe("Board Controller Test", () => {
 
     let mockedService:BoardService;
     let boardController:BoardController;
@@ -55,6 +57,47 @@ describe("User Controller Test", () => {
         })
 
     })
+
+    describe("findById method test", () => {
+
+        it('should have a findById function', async () => {        
+            expect(typeof boardController.findById).toBe('function')
+        })
+    
+        it('should call userService when findById', async () => {
+            
+            when(mockedService.findById(board.id)).thenResolve(board)
+    
+            let boardController = new BoardController(instance(mockedService));
+            
+            const result = await boardController.findById(board.id)
+    
+            verify(mockedService.findById(board.id)).once()
+            expect(result).toBe(board)
+        })
+
+    })
+
+    describe("findAll method test", () => {
+
+        it('should have a findAll function', async () => {        
+            expect(typeof boardController.findAll).toBe('function')
+        })
+    
+        it('should call userService when findAll', async () => {
+            const boards:Board[] = [board]
+            
+            when(mockedService.findAll()).thenResolve(boards)
+            
+            const result = await boardController.findAll()
+    
+            verify(mockedService.findAll()).once()
+            expect(result).toBe(boards)
+        })
+
+    })
+
+
 
 
 })

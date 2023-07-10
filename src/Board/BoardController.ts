@@ -1,8 +1,9 @@
-import { Body, JsonController, Post } from "routing-controllers";
+import { Body, Get, JsonController, Param, Post } from "routing-controllers";
 import { Inject, Service } from "typedi";
 import { BoardService } from "./boardService";
 import { CreateBoardDto } from "./dto/createBoardDto";
 import { Category } from "../Category/Category";
+import { Board } from "./Board";
 
 @JsonController('board')
 @Service()
@@ -13,9 +14,29 @@ export class BoardController {
     ) {}
 
     @Post()
-    public async createBoard(@Body() createBoardDto:CreateBoardDto) {
+    public async createBoard(@Body() createBoardDto:CreateBoardDto):Promise<Board> {
         try {
             return await this.boardService.createBoard(createBoardDto)
+        } catch (error) {
+            console.error("controller error:",error)
+            return error.message
+        }
+    }
+
+    @Get()
+    public async findAll():Promise<Board[]> {
+        try {
+            return await this.boardService.findAll();
+        } catch (error) {
+            console.error("controller error:",error)
+            return error.message
+        }
+    }
+
+    @Get('/:id')
+    public async findById(@Param('/id') id:number) {
+        try {
+            return await this.boardService.findById(id);
         } catch (error) {
             console.error("controller error:",error)
             return error.message
