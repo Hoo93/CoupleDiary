@@ -1,7 +1,7 @@
 import { User } from "../../../src/User/User";
 import { UserService } from "../../../src/User/UserService";
 import { UserRepository } from "../../../src/User/UserRepository";
-import { deepEqual, instance, mock, spy, when, verify, reset } from "ts-mockito";
+import { deepEqual, instance, mock, when, verify } from "ts-mockito";
 import { CreateUserDto } from "../../../src/User/dto/createUserDto";
 import { BadRequestError, NotFoundError } from "routing-controllers";
 import { UpdateUserDto } from "../../../src/User/dto/updateUserDto";

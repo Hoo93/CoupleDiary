@@ -5,6 +5,7 @@ import { CategoryDto } from "./dto/CategoryDto";
 import { BadRequestError, NotFoundError } from "routing-controllers";
 import { copyFileSync } from "fs";
 import { Category } from "./Category";
+import { UpdateResult } from "typeorm";
 
 @Service()
 export class CategoryService {
@@ -34,12 +35,30 @@ export class CategoryService {
         return this.categoryRepository.find();
     }
 
-    async findCategoryById(id):Promise<Category> {
+    async findCategoryById(id:number):Promise<Category> {
         const category:Category = await this.categoryRepository.findOneBy({id});
         if (!category) {
             throw new NotFoundError(`Category with id: ${id} doesn't exist`)
         }
         return category
+    }
+
+    public async updateCategory(id:number,categoryDto:CategoryDto):Promise<Number> {
+        const category = await this.categoryRepository.findOneBy({id});
+        if ( !category ) {
+            throw new NotFoundError(`category with id:${id} doesn't exist`)
+        }
+
+        const findName = await this.categoryRepository.findOneBy({name:categoryDto.name});
+        if ( findName ) {
+            throw new BadRequestError(`category name with ${categoryDto.name} already exist`)
+        }
+        
+        const updateResult:UpdateResult = await this.categoryRepository.update(id,categoryDto);
+        if ( updateResult.affected === 0 ) {
+            throw new BadRequestError('category update fail')
+        }
+        return id;
     }
 
 

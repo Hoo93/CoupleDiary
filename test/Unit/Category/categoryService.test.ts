@@ -4,15 +4,24 @@ import { CategoryService } from "../../../src/Category/CategoryService"
 import { CategoryDto } from "../../../src/Category/dto/CategoryDto";
 import { Category } from "../../../src/Category/Category";
 import { BadRequestError, NotFoundError } from "routing-controllers";
-import exp = require("constants");
+import { UpdateResult } from "typeorm";
 
 describe('categoryService unit test', () => {
 
     let categoryService:CategoryService;
     let mockedRepository:CategoryRepository;
+    
     let categoryDto:CategoryDto;
+    categoryDto = new CategoryDto();
+    categoryDto.name = "test category name"
 
     const now = new Date();
+
+    let category:Category = new Category();
+    category.id = 1;
+    category.name = "test category name";
+    category.createdAt = now;
+    category.updatedAt = now;
 
     beforeEach( () => {
         mockedRepository = mock(CategoryRepository);
@@ -21,8 +30,7 @@ describe('categoryService unit test', () => {
     })
 
     describe('categoryDto test', () => {
-        categoryDto = new CategoryDto();
-        categoryDto.name = "test category name"
+        
 
         it('categortDto.toEntity should call createCategory.', () => {
             const spyCategoryDtoToEntity = jest.spyOn(Category,'createCategory')
@@ -36,13 +44,10 @@ describe('categoryService unit test', () => {
 
     describe('createCategory test', () => {
 
-        categoryDto = new CategoryDto();
-        categoryDto.name = "test category name"
-        
         let mockedCategoryDto:CategoryDto;
         let category:Category;
         category = categoryDto.toEntity();
-        category.id = 1
+        category.id = 1        
         
         beforeEach( () => {
             mockedCategoryDto = mock(CategoryDto);
@@ -131,5 +136,52 @@ describe('categoryService unit test', () => {
             expect(result).toBe(categories)
             verify(mockedRepository.find()).once()
         })
+    })
+
+    describe('updateCategory method test', () => {
+
+        it('should be a function', async () => {
+            expect(typeof categoryService.updateCategory).toBe('function')
+        })
+
+        it('should return category id', async () => {
+            const updateResult:UpdateResult = new UpdateResult();
+            updateResult.affected = 1
+
+            when(mockedRepository.findOneBy(deepEqual({id:1}))).thenResolve(new Category())
+            when(mockedRepository.findOneBy(deepEqual({name:categoryDto.name}))).thenReturn(null)
+            when(mockedRepository.update(1,deepEqual(categoryDto))).thenResolve(updateResult)
+
+            const result = await categoryService.updateCategory(1,categoryDto);
+
+            verify(mockedRepository.findOneBy(deepEqual({name:categoryDto.name}))).once()
+            expect(result).toBe(1)
+        })
+
+        it('should throw NotFoundError when category with id doesnt exist', async() => {
+            
+            when(mockedRepository.findOneBy(deepEqual({id:1}))).thenReturn(null)
+            
+            await expect( async () => {
+                await categoryService.updateCategory(1,categoryDto) 
+            }).rejects.toThrowError(new NotFoundError(`category with id:1 doesn't exist`))
+            verify(mockedRepository.findOneBy(deepEqual({id:1}))).once()
+        })
+
+        it('should throw BadRequestError when same name in DB', async() => {
+            const findName = new Category();
+            findName.name = categoryDto.name
+            
+            when(mockedRepository.findOneBy(deepEqual({id:1}))).thenResolve(category)
+            when(mockedRepository.findOneBy(deepEqual({name:categoryDto.name}))).thenResolve(findName)
+
+            await expect(async () => {
+                await categoryService.updateCategory(1,categoryDto)
+            }).rejects.toThrowError(new BadRequestError(`category name with ${categoryDto.name} already exist`))
+            verify(mockedRepository.findOneBy(deepEqual({id:1}))).once()
+            verify(mockedRepository.findOneBy(deepEqual({name:categoryDto.name}))).once()
+        })
+
+
     })
 })

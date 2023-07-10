@@ -1,9 +1,9 @@
-import * as express from 'express';
 import { Inject, Service } from 'typedi';
 import { UserService } from './UserService';
 import { Body, Controller, Delete, Get, JsonController, Param, ParamMetadata, Patch, Post } from 'routing-controllers';
 import { CreateUserDto } from './dto/createUserDto';
 import { UpdateUserDto } from './dto/updateUserDto';
+import { User } from './User';
 
 
 @JsonController('/user')
@@ -26,7 +26,7 @@ export class UserController {
     }
 
     @Get()
-    public async findAllUser() {
+    public async findAllUser():Promise<User[]> {
         try {
             return await this.userService.findAll();
         } catch(error) {
@@ -36,7 +36,7 @@ export class UserController {
     }
 
     @Get('/:id')
-    public async findUserById (@Param('id') id:number) { 
+    public async findUserById (@Param('id') id:number):Promise<User> { 
         try {
             return await this.userService.findUserById(id);
         } catch(error) {

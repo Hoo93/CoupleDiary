@@ -6,6 +6,7 @@ import { UserController } from './User/UserController';
 import { loggerMiddleWare } from './middleware/logger';
 import { Application } from 'express';
 import express = require('express')
+import { CategoryController } from './Category/CategoryController';
 
 @Service()
 export class App {
@@ -25,7 +26,7 @@ export class App {
             typeOrmUseContainer(Container);
             useExpressServer(this.app,{
                 routePrefix:"/api",
-                controllers:[UserController],
+                controllers:[UserController,CategoryController],
                 middlewares:[`${__dirname}/middleware/*.ts`]
             });
         } catch (error) {

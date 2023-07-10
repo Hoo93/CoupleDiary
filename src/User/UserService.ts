@@ -57,7 +57,7 @@ export class UserService {
     
         const updateResult = await this.userRepository.update(user.id,updateUserDto.createUpdateInfo());
         if (updateResult.affected === 0) {
-            throw new BadRequestError('update fail')
+            throw new BadRequestError('user update fail')
         }
         return user.id;
     
