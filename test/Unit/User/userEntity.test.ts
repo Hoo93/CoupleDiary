@@ -24,12 +24,11 @@ describe('User Entity test', () => {
         expect(user.isActivated).toBe(true)
     })
 
-    it('should return isActivated false', () => {
+    it('should return isActivated false, true', () => {
         user.deactivate()
         expect(user.isActivated).toBe(false)
 
         user.activate()
         expect(user.isActivated).toBe(true)
-
     })
 })
