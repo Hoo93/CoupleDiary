@@ -1,8 +1,9 @@
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 import { BaseTimeEntity } from "../entity/BaseTimeEntity";
 import { User } from "../User/User";
 import { Board } from "../Board/Board";
 import { IsOptional } from "class-validator";
+import { CommentLike } from "../CommentLike/CommentLike";
 
 @Entity()
 export class Comment extends BaseTimeEntity {
@@ -24,6 +25,9 @@ export class Comment extends BaseTimeEntity {
 
     @ManyToOne(() => Board,(board) => board.comments)
     board:Board;
+
+    @OneToMany(() => CommentLike, (commentLikes) => commentLikes.comment)
+    commentLikes:CommentLike[];
 
     static createComment (
         userId:number,

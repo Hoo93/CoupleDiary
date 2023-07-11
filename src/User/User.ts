@@ -3,6 +3,7 @@ import { BaseTimeEntity } from "../entity/BaseTimeEntity";
 import { userInfo } from "os";
 import { Board } from "../Board/Board";
 import { BoardLike } from "../BoardLike/BoardLike";
+import { CommentLike } from "../CommentLike/CommentLike";
 
 @Entity()
 @Unique(['name'])
@@ -26,7 +27,9 @@ export class User extends BaseTimeEntity {
 
     @OneToMany(() => BoardLike, (boardLikes) => boardLikes.user)
     boardLikes:Board[];
-
+    
+    @OneToMany(() => CommentLike, (commentLikes) => commentLikes.user)
+    commentLikes:CommentLike[];
     // constructor() {
     //     super();
     // }
