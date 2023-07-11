@@ -1,12 +1,12 @@
 import { Inject, Service } from "typedi";
-import { CommenLikeRepository } from "./CommenLikeRepository";
+import { CommentLikeRepository } from "./CommentLikeRepository";
 
 
 @Service()
 export class CommentLikeService {
     constructor(
         @Inject()
-        private commentLikeRepository:CommenLikeRepository
+        private commentLikeRepository:CommentLikeRepository
     ) {}
 
 }

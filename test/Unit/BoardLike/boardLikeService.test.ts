@@ -16,9 +16,6 @@ describe('BoardLike Service Test', () => {
 
     let userId:number = 1;
     let boardId:number = 2;
-    let content:string = "test content";
-    let parentCommentId:number|null = null;
-
 
     beforeEach( () => {
         mockedRepository = mock(BoardLikeRepository)
