@@ -1,5 +1,7 @@
 import { Inject, Service } from "typedi";
 import { CommentRepository } from "./CommentRepository";
+import { CreateCommentDto } from "./dto/createCommentDto";
+import { Comment } from "./Comment";
 
 @Service()
 export class CommentService {
@@ -7,6 +9,5 @@ export class CommentService {
         @Inject()
         private commentRepository:CommentRepository
     ) {}
-
 
 }

@@ -46,10 +46,10 @@ describe('Board Service Test', () => {
         createBoardDto.updatedAt = now;
 
         it('dto.toEntity should call Board.createBoard',() => {
-            const spyUserSignUp = jest.spyOn(Board,"createBoard")
+            const spyCreateBoard = jest.spyOn(Board,"createBoard")
     
             createBoardDto.toEntity();
-            expect(spyUserSignUp).toBeCalledTimes(1)
+            expect(spyCreateBoard).toBeCalledTimes(1)
         })
 
         it('dto.toEntity should return board',() => {
