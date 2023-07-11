@@ -13,7 +13,6 @@ export class Comment extends BaseTimeEntity {
     @Column()
     boardId:number;
 
-    @IsOptional()
     @Column({default:null})
     parentCommentId:number|null;
 

@@ -15,13 +15,13 @@ export class UpdateBoardDto  {
     categoryId:number;
 
     public boardUpdateInfo(updatedAt:Date = new Date()) { 
-        const updateUserInfo = {
+        const boardUpdateInfo = {
             title:this.title,
             content:this.content,
             categoryId:this.categoryId,
             updatedAt:updatedAt
         }
-        return updateUserInfo
+        return boardUpdateInfo
     }
 
 }
