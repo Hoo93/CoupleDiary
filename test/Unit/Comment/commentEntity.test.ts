@@ -17,14 +17,6 @@ describe('Comment Entity test', () => {
         parentCommentId = null;
         content = "test content";
 
-        // comment = new Comment();
-        // comment.userId = userId,
-        // comment.boardId = boardId;
-        // comment.content = content;
-        // comment.createdAt = now;
-        // comment.updatedAt = now;
-        // comment.parentCommentId = parentCommentId;
-        
     })
 
     it('should return comment, parentCommentId default null', () => {
