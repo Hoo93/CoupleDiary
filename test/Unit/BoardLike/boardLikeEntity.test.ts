@@ -1,19 +1,13 @@
-import { Tree } from "typeorm";
 import { BoardLike } from "../../../src/BoardLike/BoardLike";
 
 describe('boardLike Entity test', () => {
     
     let boardLike:BoardLike;
-    let userId:number;
-    let boardId:number;
+    let userId:number = 1;
+    let boardId:number = 1;
     let now:Date = new Date();
 
-    beforeEach( () => {
-        userId = 1;
-        boardId = 1;
-    })
-
-    it('should return boardLike, parentboardLikeId default null', () => {
+    it('should return boardLike', () => {
         boardLike = BoardLike.createBoardLike(userId,boardId,now);
         
         expect(boardLike.userId).toBe(userId)
