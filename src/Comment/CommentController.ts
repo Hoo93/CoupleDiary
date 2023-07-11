@@ -1,4 +1,4 @@
-import { Body, JsonController, Post } from "routing-controllers";
+import { Body, Get, JsonController, Param, Post } from "routing-controllers";
 import { Inject, Service } from "typedi";
 import { CommentService } from "./CommentService";
 import { CreateCommentDto } from "./dto/createCommentDto";
@@ -22,5 +22,30 @@ export class CommentController {
             return error.message
         }
     }
+
+    @Get()
+    public async findAll():Promise<Comment[]> {
+        try {
+            return await this.commentService.findAll();
+        } catch (error) {
+            console.error("controller error:",error)
+            return error.message
+        }
+    }
+
+    @Get('/:id')
+    public async findById(@Param('id') id:number):Promise<Comment> {
+        try {
+            return await this.commentService.findById(id);
+        } catch (error) {
+            console.error("controller error:",error)
+            return error.message
+        }
+    }
+
+
+
+
+
 
 }

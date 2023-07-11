@@ -9,6 +9,7 @@ import express = require('express')
 import { CategoryController } from './Category/CategoryController';
 import { CommentController } from './Comment/CommentController';
 import { BoardController } from './Board/BoardController';
+import { BoadrLikeController } from './BoardLike/BoardLikeController';
 
 @Service()
 export class App {
@@ -32,7 +33,8 @@ export class App {
                     UserController,
                     CategoryController,
                     CommentController,
-                    BoardController],
+                    BoardController,
+                    BoadrLikeController],
                 middlewares:[`${__dirname}/middleware/*.ts`]
             });
         } catch (error) {

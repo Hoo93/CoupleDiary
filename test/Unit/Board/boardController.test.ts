@@ -3,9 +3,7 @@ import { BoardController } from "../../../src/Board/BoardController";
 import { BoardService } from "../../../src/Board/BoardService";
 import { CreateBoardDto } from "../../../src/Board/dto/createBoardDto";
 import { UpdateBoardDto } from "../../../src/Board/dto/updateBoardDto";
-import { deepEqual } from "assert";
 import { Board } from "../../../src/Board/Board";
-import exp = require("constants");
 import { DeleteResult } from "typeorm";
 
 describe("Board Controller Test", () => {
@@ -70,8 +68,6 @@ describe("Board Controller Test", () => {
             
             when(mockedService.findById(board.id)).thenResolve(board)
     
-            let boardController = new BoardController(instance(mockedService));
-            
             const result = await boardController.findById(board.id)
     
             verify(mockedService.findById(board.id)).once()

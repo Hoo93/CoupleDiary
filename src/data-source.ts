@@ -4,6 +4,7 @@ import { User } from "./User/User"
 import { Category } from "./Category/Category"
 import { Board } from "./Board/Board"
 import { Comment } from "./Comment/Comment"
+import { BoardLike } from "./BoardLike/BoardLike"
 
 export const AppDataSource = new DataSource({
     type: "postgres",
@@ -14,7 +15,7 @@ export const AppDataSource = new DataSource({
     database: "couple_diary",
     synchronize: true,
     logging: false,
-    entities: [User,Category,Board,Comment],
+    entities: [User,Category,Board,Comment,BoardLike],
     migrations: [],
     subscribers: [],
 })

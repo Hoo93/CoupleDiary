@@ -4,6 +4,8 @@ import { CommentService } from "../../../src/Comment/CommentService";
 import { CommentController } from "../../../src/Comment/CommentController";
 import { CreateCommentDto } from "../../../src/Comment/dto/createCommentDto";
 import { UpdateCommentDto } from "../../../src/Comment/dto/updateCommentDto";
+import { Comment } from "../../../src/Comment/Comment";
+import exp = require("constants");
 
 describe("Comment Controller Test", () => {
 
@@ -47,6 +49,44 @@ describe("Comment Controller Test", () => {
     
             verify(mockedService.createComment(createCommentDto)).once()
             expect(result).toBe(comment)
+        })
+
+    })
+
+    describe("findById method test", () => {
+
+        it('should have a findById function', async () => {        
+            expect(typeof commentController.findById).toBe('function')
+        })
+    
+        it('should call boardService when findById', async () => {
+            
+            when(mockedService.findById(comment.id)).thenResolve(comment)
+    
+            const result = await commentController.findById(comment.id)
+    
+            verify(mockedService.findById(comment.id)).once()
+            expect(result).toBe(comment)
+        })
+
+    })
+
+    describe("findAll method test", () => {
+
+        it('should have a findAll function', async () => {        
+            expect(typeof commentController.findAll).toBe('function')
+        })
+    
+        it('should call boardService when findAll', async () => {
+            const comments:Comment[] = [comment,comment]
+            
+            when(mockedService.findAll()).thenResolve(comments)
+            
+            const result = await commentController.findAll()
+    
+            verify(mockedService.findAll()).once()
+            expect(result).toBe(comments)
+            expect(result.length).toBe(2)
         })
 
     })

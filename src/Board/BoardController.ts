@@ -36,7 +36,7 @@ export class BoardController {
     }
 
     @Get('/:id')
-    public async findById(@Param('/id') id:number) {
+    public async findById(@Param('id') id:number):Promise<Board> {
         try {
             return await this.boardService.findById(id);
         } catch (error) {
