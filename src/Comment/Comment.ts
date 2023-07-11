@@ -29,9 +29,9 @@ export class Comment extends BaseTimeEntity {
     static createComment (
         userId:number,
         boardId:number,
-        parentCommentId:number|null,
         content:string,
-        now:Date):Comment {
+        now:Date,
+        parentCommentId:number|null = null):Comment {
             const comment = new Comment();
             comment.userId = userId,
             comment.boardId = boardId;
