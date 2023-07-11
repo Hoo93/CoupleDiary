@@ -4,6 +4,7 @@ import { BoardLike } from "../../../src/BoardLike/BoardLike";
 import { BoardLikeRepository } from "../../../src/BoardLike/BoardLikeRepository";
 import { BoardLikeService } from "../../../src/BoardLike/BoardLikeService";
 import { CreateBoardLikeDto } from "../../../src/BoardLike/dto/createBoardLikeDto";
+import { NotFoundError } from "routing-controllers";
 
 
 describe('BoardLike Service Test', () => {
@@ -79,6 +80,52 @@ describe('BoardLike Service Test', () => {
         })
     
     })
+
+    describe('boardLikeService findById test', () => {
+        
+        it('should be a function', async () => {
+            expect(typeof boardLikeService.findById).toBe('function')
+        })
+
+        it('should return boardLike', async () => {
+            when(mockedRepository.findOneBy(deepEqual({id:boardLike.id}))).thenResolve(boardLike)
+            
+            const result = await boardLikeService.findById(boardLike.id)
+            
+            expect(result).toBe(boardLike)
+            verify(mockedRepository.findOneBy(deepEqual({id:boardLike.id}))).once()
+        })
+
+        it('should throw NotFoundError', async () => {
+            when(mockedRepository.findOneBy(deepEqual({id:boardLike.id}))).thenReturn(null)
+        
+            await expect(async () => {
+                await boardLikeService.findById(boardLike.id)
+            }).rejects.toThrowError(NotFoundError)
+            verify(mockedRepository.findOneBy(deepEqual({id:boardLike.id}))).once()
+        })
+
+    })
+
+    describe('boardLikeService findAll method test' , () => {
+
+        it('should be a function', async () => {
+            expect(typeof boardLikeService.findAll).toBe('function')
+        })
+
+        it('should return BoardLike[]', async () => {
+            const boardLikes:BoardLike[] = [boardLike]
+            when(mockedRepository.find()).thenResolve(boardLikes)
+
+            const result = await boardLikeService.findAll();
+
+            expect(result).toBe(boardLikes)
+            verify(mockedRepository.find()).once()
+        })
+
+    })
+
+
 
     
 

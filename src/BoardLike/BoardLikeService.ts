@@ -34,4 +34,5 @@ export class BoardLikeService {
     public async findAll():Promise<BoardLike[]> {
         return await this.boardLikeRepository.find();
     }
+
 }
