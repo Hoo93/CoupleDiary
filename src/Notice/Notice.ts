@@ -13,7 +13,7 @@ export class Notice extends BaseTimeEntity {
     sendUserId:number;
 
     @Column()
-    recieveUserId:number;
+    receiveUserId:number;
 
     @Column()
     noticeType:Comment|CommentLike|BoardLike;
