@@ -1,4 +1,4 @@
-import { Body, Get, JsonController, Param, Post } from "routing-controllers";
+import { Body, Delete, Get, JsonController, Param, Post } from "routing-controllers";
 import { Inject } from "typedi";
 import { CommentLikeService } from "./CommenLikeService";
 import { CreateCommentLikeDto } from "./dto/createCommentLikeDto";
@@ -38,6 +38,17 @@ export class CommentLikeController {
         } catch (error) {
             console.error("controller error:",error)
             return error.message
+        }
+    }
+
+    @Delete('/:id')
+    public async deleteCommentLike (@Param('id') id:number) {
+        try {
+            return await this.commentLikeService.deleteCommentLike(id)
+        } catch(error) {
+            console.log("delete error")
+            console.error(error);
+            return error.message;
         }
     }
     

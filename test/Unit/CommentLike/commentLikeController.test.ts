@@ -83,4 +83,24 @@ describe("CommentLike Controller Test", () => {
 
     })
 
+    describe("deleteCommentLike method test", () => {
+
+        it('should have a deleteCommentLike function', async () => {        
+            expect(typeof commentLikeController.deleteCommentLike).toBe('function')
+        })
+
+        it('should return deleteResult', async () => {
+
+            const deleteResult = new DeleteResult()
+
+            when(mockedService.deleteCommentLike(commentLike.id)).thenResolve(deleteResult)
+            const result = await commentLikeController.deleteCommentLike(commentLike.id)
+
+            verify(mockedService.deleteCommentLike(commentLike.id)).once()
+            expect(result).toBe(deleteResult)
+        })
+    })
+
+
+
 })
