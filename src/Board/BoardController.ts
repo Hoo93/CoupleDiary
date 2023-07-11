@@ -1,10 +1,11 @@
-import { Body, Delete, Get, JsonController, Param, Patch, Post } from "routing-controllers";
+import { Body, Delete, Get, JsonController, Param, Patch, Post, Req } from "routing-controllers";
 import { Inject, Service } from "typedi";
 import { BoardService } from "./boardService";
 import { CreateBoardDto } from "./dto/createBoardDto";
 import { Category } from "../Category/Category";
 import { Board } from "./Board";
 import { UpdateBoardDto } from "./dto/updateBoardDto";
+import { Request } from "express";
 
 @JsonController('board')
 @Service()
@@ -61,6 +62,7 @@ export class BoardController {
         try {
             return await this.boardService.deleteBoard(id)
         } catch(error) {
+            console.log("delete error")
             console.error(error);
             return error.message;
         }

@@ -59,7 +59,7 @@ export class CategoryService {
         return id;
     }
 
-    public async deleteCategory(id:number):Promise<void> {
+    public async deleteCategory(id:number):Promise<DeleteResult> {
         const category:Category = await this.categoryRepository.findOneBy({id});
         if ( !category ) {
             throw new NotFoundError(`category with id:${id} doesn't exist`)
@@ -69,6 +69,7 @@ export class CategoryService {
         if ( deleteResult.affected === 0) {
             throw new BadRequestError('category delete fail')
         }
+        return deleteResult
     }
 
 

@@ -50,7 +50,7 @@ export class BoardService {
         return board.id;
     }
 
-    public async deleteBoard(id:number):Promise<void> {
+    public async deleteBoard(id:number):Promise<DeleteResult> {
         const board:Board = await this.boardRepository.findOneBy({id});
         if ( !board ) {
             throw new NotFoundError(`board with id:${id} doesn't exist`)
@@ -60,6 +60,7 @@ export class BoardService {
         if ( deleteResult.affected === 0) {
             throw new BadRequestError('board delete fail')
         }
+        return deleteResult
     }
 
 
