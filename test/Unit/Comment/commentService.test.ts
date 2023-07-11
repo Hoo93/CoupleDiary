@@ -227,7 +227,7 @@ describe('Comment Service Test', () => {
             expect(typeof commentService.deleteComment).toBe('function')
         })
 
-        it('should throw NotFoundError when user with id doesnt exist', async() => {
+        it('should throw NotFoundError when comment with id doesnt exist', async() => {
             
             when(mockedRepository.findOneBy(deepEqual({id:comment.id}))).thenReturn(null)
             

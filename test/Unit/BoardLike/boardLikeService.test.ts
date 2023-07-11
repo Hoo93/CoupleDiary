@@ -5,6 +5,7 @@ import { BoardLikeRepository } from "../../../src/BoardLike/BoardLikeRepository"
 import { BoardLikeService } from "../../../src/BoardLike/BoardLikeService";
 import { CreateBoardLikeDto } from "../../../src/BoardLike/dto/createBoardLikeDto";
 import { NotFoundError } from "routing-controllers";
+import { DeleteResult } from "typeorm";
 
 
 describe('BoardLike Service Test', () => {
@@ -123,6 +124,38 @@ describe('BoardLike Service Test', () => {
             verify(mockedRepository.find()).once()
         })
 
+    })
+
+    describe('boardLikeService deleteBoardLike method test' , () => {
+    
+        it('should be a function',async () => {
+            expect(typeof boardLikeService.deleteBoardLike).toBe('function')
+        })
+
+        it('should throw NotFoundError when boardLike with id doesnt exist', async() => {
+            
+            when(mockedRepository.findOneBy(deepEqual({id:boardLike.id}))).thenReturn(null)
+            
+            await expect( async () => {
+                await boardLikeService.deleteBoardLike(boardLike.id) 
+            }).rejects.toThrowError(new NotFoundError(`boardLike with id:${boardLike.id} doesn't exist`))
+            verify(mockedRepository.findOneBy(deepEqual({id:boardLike.id}))).once()
+
+        })
+
+        it('should return deleteResult' , async () => {
+            let deleteResult = new DeleteResult();
+            deleteResult.affected = 1;
+
+            when(mockedRepository.findOneBy(deepEqual({id:boardLike.id}))).thenResolve(boardLike)
+            when(mockedRepository.delete(deepEqual({id:boardLike.id}))).thenResolve(deleteResult)
+
+            const result = await boardLikeService.deleteBoardLike(boardLike.id);
+
+            verify(mockedRepository.findOneBy(deepEqual({id:boardLike.id}))).once()
+            verify(mockedRepository.delete(deepEqual({id:boardLike.id}))).once()
+            expect(result).toBe(deleteResult)
+        })
     })
 
 
