@@ -21,13 +21,12 @@
 
 <img width="800" alt="image" src="https://github.com/Hoo93/TDD-Diary/assets/117077999/ae137a7e-7e75-4c51-8ff6-ad73bc9c8e79">
 
-- 제3 정규화를 고려한 테이블 
-
 ---
 ## 프로젝트 설명
 - 목차
     - [계층화 구조](#계층화-구조)
     - [의존성 주입](#의존성-주입)
+    - [단위 테스팅](#단위-테스트-구현)
     - [말하는 객체](#말하는-객체)
     - [Validation](#validation)
 
@@ -42,6 +41,8 @@
     - Controller : routing-controllers 모듈을 활용해 routing 기능 수행
     - Service : 메인 로직을 담당
     - Repository : DB로의 접근을 담당
+
+- 블로그 포스팅
     - 📄 [계층화 구조](https://programmer-hoo.tistory.com/54)
     - 📄 [Repository Class 구현 방법](https://programmer-hoo.tistory.com/65)
 
@@ -59,13 +60,28 @@
 
 - 효과
     - 코드가 간결해짐
-        - 의존성 주입 전) 
-        ₩₩₩const userService = new UserService(UserRepository);₩₩₩
-        - 의존성 주입 후) 
-        ₩₩₩const userService = new UserService();₩₩₩
+        - 의존성 주입 전)    
+        <pre><code>
+        const userService = new UserService(UserRepository);
+        </pre></code>
+        - 의존성 주입 후)     
+        <pre><code>
+        const userService = new UserService();
+        </pre></code>
         - typedi Container에 등록된 class를 찾아 자동으로 의존성을 주입해줌
     - 각 계층이 아닌 Container를 의지하게 해 결합도가 낮아짐
     - 테스팅하기 쉬운 코드가 됨 : 결합도가 낮아지기 때문
+
+---
+## 단위 테스팅
+<img width="420" alt="Screenshot 2023-07-12 at 0 21 58" src="https://github.com/Hoo93/TDD-Diary/assets/117077999/77a92ff0-142f-4dc8-9fea-0334161ab425">
+<img width="420" alt="Screenshot 2023-07-12 at 0 21 05" src="https://github.com/Hoo93/TDD-Diary/assets/117077999/d5f92885-8f8a-453b-a71e-012257dfe397">
+- 사용 모듈 : Jest, ts-mockito
+- 총 159개의 테스트 / 83% 의 Code Coverage
+- 코드구현과 테스트코드 작성을 함께 병행
+- 테스트 코드 구현이 어려운 경우 아키텍쳐의 문제라고 판단해 아키텍쳐를 테스트하기 용이한 코드로 변경하며 구현
+    - ex) Repository 객체를 주입하는 것이 아닌 Repository Class를 분리
+
 
 ---
 ## 말하는 객체

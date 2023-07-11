@@ -10,6 +10,7 @@ import { CategoryController } from './Category/CategoryController';
 import { CommentController } from './Comment/CommentController';
 import { BoardController } from './Board/BoardController';
 import { BoadrLikeController } from './BoardLike/BoardLikeController';
+import { CommentLikeController } from './CommentLike/CommentLikeController';
 
 @Service()
 export class App {
@@ -34,7 +35,8 @@ export class App {
                     CategoryController,
                     CommentController,
                     BoardController,
-                    BoadrLikeController],
+                    BoadrLikeController,
+                    CommentLikeController],
                 middlewares:[`${__dirname}/middleware/*.ts`]
             });
         } catch (error) {
