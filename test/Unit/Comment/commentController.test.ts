@@ -107,5 +107,23 @@ describe("Comment Controller Test", () => {
         })
     })
 
+    describe("deleteComment method test", () => {
+
+        it('should have a deleteComment function', async () => {        
+            expect(typeof commentController.deleteComment).toBe('function')
+        })
+
+        it('should return deleteResult', async () => {
+
+            const deleteResult = new DeleteResult()
+
+            when(mockedService.deleteComment(comment.id)).thenResolve(deleteResult)
+            const result = await commentController.deleteComment(comment.id)
+
+            verify(mockedService.deleteComment(comment.id)).once()
+            expect(result).toBe(deleteResult)
+        })
+    })
+
 
 })

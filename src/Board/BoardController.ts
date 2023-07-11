@@ -47,7 +47,7 @@ export class BoardController {
 
     @Patch('/:id')
     public async updateBoard(
-        @Param('/id') id:number,
+        @Param('id') id:number,
         @Body() updateBoardDto:UpdateBoardDto) {
             try {
                 return await this.boardService.updateBoard(id,updateBoardDto);
