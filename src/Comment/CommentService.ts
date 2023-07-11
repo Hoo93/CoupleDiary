@@ -2,7 +2,8 @@ import { Inject, Service } from "typedi";
 import { CommentRepository } from "./CommentRepository";
 import { CreateCommentDto } from "./dto/createCommentDto";
 import { Comment } from "./Comment";
-import { NotFoundError } from "routing-controllers";
+import { BadRequestError, NotFoundError } from "routing-controllers";
+import { UpdateCommentDto } from "./dto/updateCommentDto";
 
 @Service()
 export class CommentService {
@@ -33,6 +34,19 @@ export class CommentService {
 
     public async findAll():Promise<Comment[]> {
         return await this.commentRepository.find();
+    }
+
+    public async updateComment(id:number,updateCommentDto:UpdateCommentDto): Promise<Number> {
+        let comment = await this.commentRepository.findOneBy({id});
+        if (!comment) {
+            throw new NotFoundError(`comment with id:${id} doesn't exist`)
+        }
+        
+        const updateResult = await this.commentRepository.update(comment.id,updateCommentDto.commentUpdateInfo());
+        if (updateResult.affected === 0) {
+            throw new BadRequestError('comment update fail')
+        }
+        return comment.id;
     }
 
 }

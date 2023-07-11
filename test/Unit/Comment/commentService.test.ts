@@ -4,7 +4,8 @@ import { CommentRepository } from "../../../src/Comment/CommentRepository";
 import { CommentService } from "../../../src/Comment/CommentService";
 import { CreateCommentDto } from "../../../src/Comment/dto/createCommentDto";
 import { UpdateCommentDto } from "../../../src/Comment/dto/updateCommentDto";
-import { NotFoundError } from "routing-controllers";
+import { BadRequestError, NotFoundError } from "routing-controllers";
+import { UpdateResult } from "typeorm";
 
 describe('Comment Service Test', () => {
     let mockedRepository:CommentRepository;
@@ -158,7 +159,70 @@ describe('Comment Service Test', () => {
 
     })
 
+    describe('commentService updateComment method test' , () => {
+        let updateCommentDto:UpdateCommentDto;
+        let updatedComment:Comment
 
+        beforeEach(() => {
+            updateCommentDto = new UpdateCommentDto();
+            updateCommentDto.content = "test update content";
+        })
 
+        it('should be a function',async () => {
+            expect(typeof commentService.updateComment).toBe('function')
+        })
 
+        it('should return comment.id', async () => {
+            let updateResult = new UpdateResult()
+            updateResult.affected = 1
+            
+            const mockedCommentUpdateDto = mock(UpdateCommentDto)
+            when(mockedCommentUpdateDto.commentUpdateInfo()).thenReturn(updateCommentDto.commentUpdateInfo(now))
+            let mUpdateCommentDto  = instance(mockedCommentUpdateDto)
+            
+            when(mockedRepository.findOneBy(deepEqual({id:comment.id}))).thenResolve(comment)
+            when(mockedRepository.update(1,deepEqual(updateCommentDto.commentUpdateInfo(now)))).thenResolve(updateResult)
+
+            const result = await commentService.updateComment(comment.id,mUpdateCommentDto);
+
+            verify(mockedRepository.findOneBy(deepEqual({id:comment.id}))).once()
+            verify(mockedRepository.update(deepEqual(comment.id),deepEqual(updateCommentDto.commentUpdateInfo(now)))).once()
+            expect(result).toBe(comment.id)            
+            
+        })
+        it('should throw NotFoundError when comment with id doesnt exist', async() => {
+            
+            when(mockedRepository.findOneBy(deepEqual({id:comment.id}))).thenReturn(null)
+            
+            await expect( async () => {
+                await commentService.updateComment(1,updateCommentDto) 
+            }).rejects.toThrowError(new NotFoundError("comment with id:1 doesn't exist"))
+            verify(mockedRepository.findOneBy(deepEqual({id:comment.id}))).once()
+    
+        })
+    
+        it('should throw error when updateResult.affected === 0 ', async () => {
+            let updateResult = new UpdateResult()
+            updateResult.affected = 0
+            
+            const mockedCommentUpdateDto = mock(UpdateCommentDto)
+            when(mockedCommentUpdateDto.commentUpdateInfo()).thenReturn(updateCommentDto.commentUpdateInfo(now))
+            let mUpdateCommentDto  = instance(mockedCommentUpdateDto)
+            
+            when(mockedRepository.findOneBy(deepEqual({id:comment.id}))).thenResolve(comment)
+            when(mockedRepository.update(1,deepEqual(updateCommentDto.commentUpdateInfo(now)))).thenResolve(updateResult)
+    
+            
+    
+            await expect( async () => {
+                await commentService.updateComment(comment.id,mUpdateCommentDto);
+            }).rejects.toThrowError(new BadRequestError('comment update fail'))
+            verify(mockedRepository.findOneBy(deepEqual({id:comment.id}))).once()
+            verify(mockedRepository.update(deepEqual(comment.id),deepEqual(updateCommentDto.commentUpdateInfo(now)))).once()
+        })
+
+    })
+
+    
 })
+

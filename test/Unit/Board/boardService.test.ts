@@ -116,7 +116,7 @@ describe('Board Service Test', () => {
     
     })
 
-    describe('boardService findUserById test', () => {
+    describe('boardService findById test', () => {
         
         it('should be a function', async () => {
             expect(typeof boardService.findById).toBe('function')
@@ -215,8 +215,6 @@ describe('Board Service Test', () => {
             
             when(mockedRepository.findOneBy(deepEqual({id:board.id}))).thenResolve(board)
             when(mockedRepository.update(1,deepEqual(updateBoardDto.boardUpdateInfo(now)))).thenResolve(updateResult)
-
-            
 
             await expect( async () => {
                 await boardService.updateBoard(board.id,mUpdateBoardDto);
