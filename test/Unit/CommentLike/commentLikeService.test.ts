@@ -122,4 +122,36 @@ describe('CommentLike Service Test', () => {
 
     })
 
+    describe('commentLikeService deleteCommentLike method test' , () => {
+    
+        it('should be a function',async () => {
+            expect(typeof commentLikeService.deleteCommentLike).toBe('function')
+        })
+
+        it('should throw NotFoundError when commentLike with id doesnt exist', async() => {
+            
+            when(mockedRepository.findOneBy(deepEqual({id:commentLike.id}))).thenReturn(null)
+            
+            await expect( async () => {
+                await commentLikeService.deleteCommentLike(commentLike.id) 
+            }).rejects.toThrowError(new NotFoundError(`CommentLike with id:${commentLike.id} doesn't exist`))
+            verify(mockedRepository.findOneBy(deepEqual({id:commentLike.id}))).once()
+
+        })
+
+        it('should return deleteResult' , async () => {
+            let deleteResult = new DeleteResult();
+            deleteResult.affected = 1;
+
+            when(mockedRepository.findOneBy(deepEqual({id:commentLike.id}))).thenResolve(commentLike)
+            when(mockedRepository.delete(deepEqual({id:commentLike.id}))).thenResolve(deleteResult)
+
+            const result = await commentLikeService.deleteCommentLike(commentLike.id);
+
+            verify(mockedRepository.findOneBy(deepEqual({id:commentLike.id}))).once()
+            verify(mockedRepository.delete(deepEqual({id:commentLike.id}))).once()
+            expect(result).toBe(deleteResult)
+        })
+    })
+
 })

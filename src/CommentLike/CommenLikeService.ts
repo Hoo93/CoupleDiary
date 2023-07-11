@@ -2,7 +2,8 @@ import { Inject, Service } from "typedi";
 import { CommentLikeRepository } from "./CommentLikeRepository";
 import { CreateCommentLikeDto } from "./dto/createCommentLikeDto";
 import { CommentLike } from "./CommentLike";
-import { NotFoundError } from "routing-controllers";
+import { BadRequestError, NotFoundError } from "routing-controllers";
+import { DeleteResult } from "typeorm";
 
 
 @Service()
@@ -34,6 +35,19 @@ export class CommentLikeService {
 
     public async findAll():Promise<CommentLike[]> {
         return await this.commentLikeRepository.find();
+    }
+
+    public async deleteCommentLike(id:number):Promise<DeleteResult> {
+        const commentLike:CommentLike = await this.commentLikeRepository.findOneBy({id});
+        if ( !commentLike ) {
+            throw new NotFoundError(`CommentLike with id:${id} doesn't exist`)
+        }
+
+        const deleteResult:DeleteResult = await this.commentLikeRepository.delete({id});
+        if ( deleteResult.affected === 0) {
+            throw new BadRequestError('CommentLike delete fail')
+        }
+        return deleteResult
     }
 
 }
