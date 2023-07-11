@@ -74,8 +74,10 @@
 
 ---
 ## 단위 테스팅
-<img width="420" alt="Screenshot 2023-07-12 at 0 21 58" src="https://github.com/Hoo93/TDD-Diary/assets/117077999/77a92ff0-142f-4dc8-9fea-0334161ab425">
-<img width="420" alt="Screenshot 2023-07-12 at 0 21 05" src="https://github.com/Hoo93/TDD-Diary/assets/117077999/d5f92885-8f8a-453b-a71e-012257dfe397">
+<img width="450" alt="Screenshot 2023-07-12 at 0 21 58" src="https://github.com/Hoo93/TDD-Diary/assets/117077999/77a92ff0-142f-4dc8-9fea-0334161ab425">
+<img width="450" alt="Screenshot 2023-07-12 at 0 21 05" src="https://github.com/Hoo93/TDD-Diary/assets/117077999/d5f92885-8f8a-453b-a71e-012257dfe397">
+
+
 - 사용 모듈 : Jest, ts-mockito
 - 총 159개의 테스트 / 83% 의 Code Coverage
 - 코드구현과 테스트코드 작성을 함께 병행
