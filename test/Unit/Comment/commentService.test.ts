@@ -1,4 +1,4 @@
-import { instance, mock } from "ts-mockito";
+import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import { Comment } from "../../../src/Comment/Comment";
 import { CommentRepository } from "../../../src/Comment/CommentRepository";
 import { CommentService } from "../../../src/Comment/CommentService";
@@ -83,6 +83,34 @@ describe('Comment Service Test', () => {
             expect(updateInfo.content).toBe(updateCommentDto.content)
             expect(updateInfo.updatedAt).toBe(now)
         })
+    })
+
+    describe('createComment method test', () => {
+        let createCommentDto:CreateCommentDto = new CreateCommentDto();
+        createCommentDto.userId = userId;
+        createCommentDto.boardId = boardId;
+        createCommentDto.content = content;
+        createCommentDto.createdAt = now;
+        createCommentDto.updatedAt = now;
+
+        it('should be a function', () => {
+            expect(typeof commentService.createComment).toBe('function');
+        })
+
+        it('shoud return comment', async () => {
+            when(mockedRepository.save(deepEqual(comment))).thenResolve(comment)
+            
+            let mockedDto = mock(CreateCommentDto);
+            let dto = instance(mockedDto)
+            when(mockedDto.toEntity()).thenReturn(comment)
+
+            const result = await commentService.createComment(dto)
+
+            expect(dto.toEntity()).toBe(comment)
+            expect(result).toBe(comment)
+            verify(mockedRepository.save(deepEqual(comment))).once()
+        })
+    
     })
 
 
