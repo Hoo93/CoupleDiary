@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, Unique, OneToMany } from "typeo
 import { BaseTimeEntity } from "../entity/BaseTimeEntity";
 import { userInfo } from "os";
 import { Board } from "../Board/Board";
+import { BoardLike } from "../BoardLike/BoardLike";
 
 @Entity()
 @Unique(['name'])
@@ -22,6 +23,9 @@ export class User extends BaseTimeEntity {
 
     @OneToMany(() => Board, (boards) => boards.user)
     boards:Board[];
+
+    @OneToMany(() => BoardLike, (boardLikes) => boardLikes.user)
+    boardLikes:Board[];
 
     // constructor() {
     //     super();

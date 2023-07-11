@@ -3,6 +3,7 @@ import { BaseTimeEntity } from "../entity/BaseTimeEntity";
 import { User } from "../User/User";
 import { Category } from "../Category/Category";
 import { Comment } from "../Comment/Comment";
+import { BoardLike } from "../BoardLike/BoardLike";
 
 @Entity()
 export class Board extends BaseTimeEntity {
@@ -30,6 +31,9 @@ export class Board extends BaseTimeEntity {
 
     @OneToMany(() => (Comment), (comments) => comments.board,{cascade:true,eager:true})
     comments:Comment[]
+
+    @OneToMany(() => (BoardLike), (boardLikes) => boardLikes.board,{cascade:true,eager:true})
+    boardLikes:BoardLike[]
 
     static createBoard (
         userId:number,
