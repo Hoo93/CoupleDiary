@@ -5,7 +5,7 @@ import { CreateBoardLikeDto } from "./dto/createBoardLikeDto";
 import { BoardLike } from "./BoardLike";
 
 
-@JsonController('/boardLike')
+@JsonController('/boardlike')
 @Service()
 export class BoadrLikeController {
     constructor (
