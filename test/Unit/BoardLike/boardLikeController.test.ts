@@ -34,7 +34,7 @@ describe("BoardLike Controller Test", () => {
             expect(typeof boardLikeController.createBoardLike).toBe('function')
         })
 
-        it('should callLike boardService when createBoardLike', async () => {
+        it('should call boardLikeService when createBoardLike', async () => {
             when(mockedService.createBoardLike(createBoardLikeDto)).thenResolve(boardLike)
     
             let boardLikeController = new BoadrLikeController(instance(mockedService));
