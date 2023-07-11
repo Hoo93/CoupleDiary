@@ -1,9 +1,9 @@
 import { instance, mock, verify, when } from "ts-mockito";
-import { Board } from "../../../src/Board/Board";
 import { DeleteResult } from "typeorm";
 import { BoardLikeService } from "../../../src/BoardLike/BoardLikeService";
 import { BoadrLikeController } from "../../../src/BoardLike/BoardLikeController";
 import { CreateBoardLikeDto } from "../../../src/BoardLike/dto/createBoardLikeDto";
+import { BoardLike } from "../../../src/BoardLike/BoardLike";
 
 describe("BoardLike Controller Test", () => {
 
@@ -46,5 +46,43 @@ describe("BoardLike Controller Test", () => {
 
     })
 
+    describe("findById method test", () => {
+
+        it('should have a findById function', async () => {        
+            expect(typeof boardLikeController.findById).toBe('function')
+        })
     
+        it('should call boardService when findById', async () => {
+            
+            when(mockedService.findById(boardLike.id)).thenResolve(boardLike)
+    
+            const result = await boardLikeController.findById(boardLike.id)
+    
+            verify(mockedService.findById(boardLike.id)).once()
+            expect(result).toBe(boardLike)
+        })
+
+    })
+
+    describe("findAll method test", () => {
+
+        it('should have a findAll function', async () => {        
+            expect(typeof boardLikeController.findAll).toBe('function')
+        })
+    
+        it('should call boardLikeService when findAll', async () => {
+            const boardLikes:BoardLike[] = [boardLike]
+            
+            when(mockedService.findAll()).thenResolve(boardLikes)
+            
+            const result = await boardLikeController.findAll()
+    
+            verify(mockedService.findAll()).once()
+            expect(result).toBe(boardLikes)
+        })
+
+    })
+
+
+
 })

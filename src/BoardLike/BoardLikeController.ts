@@ -1,10 +1,11 @@
 import { Inject, Service } from "typedi";
 import { BoardLikeService } from "./BoardLikeService";
-import { Body, Post } from "routing-controllers";
+import { Body, Get, JsonController, Param, Post } from "routing-controllers";
 import { CreateBoardLikeDto } from "./dto/createBoardLikeDto";
 import { BoardLike } from "./BoardLike";
 
 
+@JsonController('/boardLike')
 @Service()
 export class BoadrLikeController {
     constructor (
@@ -16,6 +17,26 @@ export class BoadrLikeController {
     public async createBoardLike(@Body() createBoardLikeDto:CreateBoardLikeDto):Promise<BoardLike> {
         try {
             return await this.boardLikeService.createBoardLike(createBoardLikeDto)
+        } catch (error) {
+            console.error("controller error:",error)
+            return error.message
+        }
+    }
+
+    @Get()
+    public async findAll():Promise<BoardLike[]> {
+        try {
+            return await this.boardLikeService.findAll();
+        } catch (error) {
+            console.error("controller error:",error)
+            return error.message
+        }
+    }
+
+    @Get('/:id')
+    public async findById(@Param('id') id:number):Promise<BoardLike> {
+        try {
+            return await this.boardLikeService.findById(id);
         } catch (error) {
             console.error("controller error:",error)
             return error.message
