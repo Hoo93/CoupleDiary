@@ -8,4 +8,5 @@ export class BoadrLikeController {
         @Inject()
         private boardLikeService:BoardLikeService
     ) {}
+    
 }
