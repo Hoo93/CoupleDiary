@@ -241,7 +241,7 @@ describe('Board Service Test', () => {
 
         })
 
-        it('should return nothing' , async () => {
+        it('should return deleteResult' , async () => {
             let deleteResult = new DeleteResult();
             deleteResult.affected = 1;
 
@@ -252,8 +252,7 @@ describe('Board Service Test', () => {
 
             verify(mockedRepository.findOneBy(deepEqual({id:board.id}))).once()
             verify(mockedRepository.delete(deepEqual({id:board.id}))).once()
-            expect(result).toBe(undefined)
-
+            expect(result).toBe(deleteResult)
         })
     })
 

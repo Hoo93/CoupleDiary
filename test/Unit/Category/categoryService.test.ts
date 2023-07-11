@@ -201,7 +201,7 @@ describe('categoryService unit test', () => {
 
         })
 
-        it('should return nothing' , async () => {
+        it('should return deleteResult' , async () => {
             let deleteResult = new DeleteResult();
             deleteResult.affected = 1;
 
@@ -212,7 +212,7 @@ describe('categoryService unit test', () => {
 
             verify(mockedRepository.findOneBy(deepEqual({id:category.id}))).once()
             verify(mockedRepository.delete(deepEqual({id:category.id}))).once()
-            expect(result).toBe(undefined)
+            expect(result).toBe(deleteResult)
 
         })
     })

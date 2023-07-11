@@ -4,6 +4,7 @@ import { CreateCommentDto } from "./dto/createCommentDto";
 import { Comment } from "./Comment";
 import { BadRequestError, NotFoundError } from "routing-controllers";
 import { UpdateCommentDto } from "./dto/updateCommentDto";
+import { DeleteResult } from "typeorm";
 
 @Service()
 export class CommentService {
@@ -47,6 +48,19 @@ export class CommentService {
             throw new BadRequestError('comment update fail')
         }
         return comment.id;
+    }
+
+    public async deleteComment(id:number):Promise<DeleteResult> {
+        const comment:Comment = await this.commentRepository.findOneBy({id});
+        if ( !comment ) {
+            throw new NotFoundError(`comment with id:${id} doesn't exist`)
+        }
+
+        const deleteResult:DeleteResult = await this.commentRepository.delete({id});
+        if ( deleteResult.affected === 0) {
+            throw new BadRequestError('comment delete fail')
+        }
+        return deleteResult
     }
 
 }

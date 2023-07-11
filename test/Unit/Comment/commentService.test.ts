@@ -5,7 +5,7 @@ import { CommentService } from "../../../src/Comment/CommentService";
 import { CreateCommentDto } from "../../../src/Comment/dto/createCommentDto";
 import { UpdateCommentDto } from "../../../src/Comment/dto/updateCommentDto";
 import { BadRequestError, NotFoundError } from "routing-controllers";
-import { UpdateResult } from "typeorm";
+import { DeleteResult, UpdateResult } from "typeorm";
 
 describe('Comment Service Test', () => {
     let mockedRepository:CommentRepository;
@@ -212,8 +212,6 @@ describe('Comment Service Test', () => {
             when(mockedRepository.findOneBy(deepEqual({id:comment.id}))).thenResolve(comment)
             when(mockedRepository.update(1,deepEqual(updateCommentDto.commentUpdateInfo(now)))).thenResolve(updateResult)
     
-            
-    
             await expect( async () => {
                 await commentService.updateComment(comment.id,mUpdateCommentDto);
             }).rejects.toThrowError(new BadRequestError('comment update fail'))
@@ -222,6 +220,41 @@ describe('Comment Service Test', () => {
         })
 
     })
+
+    describe('commentService deleteComment method test' , () => {
+    
+        it('should be a function',async () => {
+            expect(typeof commentService.deleteComment).toBe('function')
+        })
+
+        it('should throw NotFoundError when user with id doesnt exist', async() => {
+            
+            when(mockedRepository.findOneBy(deepEqual({id:comment.id}))).thenReturn(null)
+            
+            await expect( async () => {
+                await commentService.deleteComment(comment.id) 
+            }).rejects.toThrowError(new NotFoundError(`comment with id:${comment.id} doesn't exist`))
+            verify(mockedRepository.findOneBy(deepEqual({id:comment.id}))).once()
+
+        })
+
+        it('should return deleteResult' , async () => {
+            let deleteResult = new DeleteResult();
+            deleteResult.affected = 1;
+
+            when(mockedRepository.findOneBy(deepEqual({id:comment.id}))).thenResolve(comment)
+            when(mockedRepository.delete(deepEqual({id:comment.id}))).thenResolve(deleteResult)
+
+            const result = await commentService.deleteComment(comment.id);
+
+            verify(mockedRepository.findOneBy(deepEqual({id:comment.id}))).once()
+            verify(mockedRepository.delete(deepEqual({id:comment.id}))).once()
+            expect(result).toBe(deleteResult)
+        })
+    })
+
+
+    
 
     
 })

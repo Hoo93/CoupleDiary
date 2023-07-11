@@ -6,6 +6,7 @@ import { UpdateBoardDto } from "../../../src/Board/dto/updateBoardDto";
 import { deepEqual } from "assert";
 import { Board } from "../../../src/Board/Board";
 import exp = require("constants");
+import { DeleteResult } from "typeorm";
 
 describe("Board Controller Test", () => {
 
@@ -120,14 +121,15 @@ describe("Board Controller Test", () => {
             expect(typeof boardController.deleteBoard).toBe('function')
         })
 
-        it('should return nothing', async () => {
+        it('should return deleteResult', async () => {
 
-            when(mockedService.deleteBoard(board.id)).thenResolve(undefined)
-            const deleteResult = await boardController.deleteBoard(board.id)
+            const deleteResult = new DeleteResult()
+
+            when(mockedService.deleteBoard(board.id)).thenResolve(deleteResult)
+            const result = await boardController.deleteBoard(board.id)
 
             verify(mockedService.deleteBoard(board.id)).once()
-            expect(mockedService.deleteBoard).toBeCalledWith(board.id)
-            expect(deleteResult).toBe(undefined)
+            expect(result).toBe(deleteResult)
         })
     })
 
