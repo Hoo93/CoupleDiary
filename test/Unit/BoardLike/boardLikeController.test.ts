@@ -83,6 +83,24 @@ describe("BoardLike Controller Test", () => {
 
     })
 
+    describe("deleteBoardLike method test", () => {
+
+        it('should have a deleteBoardLike function', async () => {        
+            expect(typeof boardLikeController.deleteBoardLike).toBe('function')
+        })
+
+        it('should return deleteResult', async () => {
+
+            const deleteResult = new DeleteResult()
+
+            when(mockedService.deleteBoardLike(boardLike.id)).thenResolve(deleteResult)
+            const result = await boardLikeController.deleteBoardLike(boardLike.id)
+
+            verify(mockedService.deleteBoardLike(boardLike.id)).once()
+            expect(result).toBe(deleteResult)
+        })
+    })
+
 
 
 })

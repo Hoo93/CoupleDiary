@@ -1,6 +1,6 @@
 import { Inject, Service } from "typedi";
 import { BoardLikeService } from "./BoardLikeService";
-import { Body, Get, JsonController, Param, Post } from "routing-controllers";
+import { Body, Delete, Get, JsonController, Param, Post } from "routing-controllers";
 import { CreateBoardLikeDto } from "./dto/createBoardLikeDto";
 import { BoardLike } from "./BoardLike";
 
@@ -40,6 +40,17 @@ export class BoadrLikeController {
         } catch (error) {
             console.error("controller error:",error)
             return error.message
+        }
+    }
+
+    @Delete('/:id')
+    public async deleteBoardLike (@Param('id') id:number) {
+        try {
+            return await this.boardLikeService.deleteBoardLike(id)
+        } catch(error) {
+            console.log("delete error")
+            console.error(error);
+            return error.message;
         }
     }
 
