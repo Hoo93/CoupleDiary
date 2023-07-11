@@ -7,7 +7,7 @@ import { UpdateBoardDto } from "./dto/updateBoardDto";
 import { Request } from "express";
 import { BoardService } from "./BoardService";
 
-@JsonController('board')
+@JsonController('/board')
 @Service()
 export class BoardController {
     constructor (

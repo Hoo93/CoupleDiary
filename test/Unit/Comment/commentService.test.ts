@@ -4,6 +4,7 @@ import { CommentRepository } from "../../../src/Comment/CommentRepository";
 import { CommentService } from "../../../src/Comment/CommentService";
 import { CreateCommentDto } from "../../../src/Comment/dto/createCommentDto";
 import { UpdateCommentDto } from "../../../src/Comment/dto/updateCommentDto";
+import { NotFoundError } from "routing-controllers";
 
 describe('Comment Service Test', () => {
     let mockedRepository:CommentRepository;
@@ -111,6 +112,50 @@ describe('Comment Service Test', () => {
             verify(mockedRepository.save(deepEqual(comment))).once()
         })
     
+    })
+
+    describe('commentService findById test', () => {
+        
+        it('should be a function', async () => {
+            expect(typeof commentService.findById).toBe('function')
+        })
+
+        it('should return comment', async () => {
+            when(mockedRepository.findOneBy(deepEqual({id:1}))).thenResolve(comment)
+            
+            const result = await commentService.findById(1)
+            
+            expect(result).toBe(comment)
+            verify(mockedRepository.findOneBy(deepEqual({id:1}))).once()
+        })
+
+        it('should throw NotFoundError', async () => {
+            when(mockedRepository.findOneBy(deepEqual({id:comment.id}))).thenReturn(null)
+        
+            await expect(async () => {
+                await commentService.findById(comment.id)
+            }).rejects.toThrowError(NotFoundError)
+            verify(mockedRepository.findOneBy(deepEqual({id:comment.id}))).once()
+        })
+
+    })
+    
+    describe('commentService findAll method test' , () => {
+
+        it('should be a function', async () => {
+            expect(typeof commentService.findAll).toBe('function')
+        })
+
+        it('should return Comment[]', async () => {
+            const comments:Comment[] = [comment]
+            when(mockedRepository.find()).thenResolve(comments)
+
+            const result = await commentService.findAll();
+
+            expect(result).toBe(comments)
+            verify(mockedRepository.find()).once()
+        })
+
     })
 
 

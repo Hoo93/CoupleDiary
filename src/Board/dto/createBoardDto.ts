@@ -1,6 +1,6 @@
 import { Column } from "typeorm";
 import { BaseTimeEntity } from "../../entity/BaseTimeEntity";
-import { IsBoolean, IsInt, IsNotEmpty, MinLength, min } from "class-validator";
+import { IsBoolean, IsInt, IsNotEmpty, IsOptional, MinLength, min } from "class-validator";
 import { Board } from "../Board";
 
 export class CreateBoardDto extends BaseTimeEntity {
@@ -21,6 +21,7 @@ export class CreateBoardDto extends BaseTimeEntity {
     @MinLength(1,{message:'board title should be longer than 1'})
     content:string;
 
+    @IsOptional()
     @IsNotEmpty()
     @IsBoolean()
     isPublic:boolean;

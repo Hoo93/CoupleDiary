@@ -28,7 +28,11 @@ export class App {
             typeOrmUseContainer(Container);
             useExpressServer(this.app,{
                 routePrefix:"/api",
-                controllers:[UserController,CategoryController,CommentController,BoardController],
+                controllers:[
+                    UserController,
+                    CategoryController,
+                    CommentController,
+                    BoardController],
                 middlewares:[`${__dirname}/middleware/*.ts`]
             });
         } catch (error) {
