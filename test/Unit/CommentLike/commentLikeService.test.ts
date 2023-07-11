@@ -78,4 +78,48 @@ describe('CommentLike Service Test', () => {
     
     })
 
+    describe('commentLikeService findById test', () => {
+        
+        it('should be a function', async () => {
+            expect(typeof commentLikeService.findById).toBe('function')
+        })
+
+        it('should return commentLike', async () => {
+            when(mockedRepository.findOneBy(deepEqual({id:commentLike.id}))).thenResolve(commentLike)
+            
+            const result = await commentLikeService.findById(commentLike.id)
+            
+            expect(result).toBe(commentLike)
+            verify(mockedRepository.findOneBy(deepEqual({id:commentLike.id}))).once()
+        })
+
+        it('should throw NotFoundError', async () => {
+            when(mockedRepository.findOneBy(deepEqual({id:commentLike.id}))).thenReturn(null)
+        
+            await expect(async () => {
+                await commentLikeService.findById(commentLike.id)
+            }).rejects.toThrowError(NotFoundError)
+            verify(mockedRepository.findOneBy(deepEqual({id:commentLike.id}))).once()
+        })
+
+    })
+
+    describe('commentLikeService findAll method test' , () => {
+
+        it('should be a function', async () => {
+            expect(typeof commentLikeService.findAll).toBe('function')
+        })
+
+        it('should return CommentLike[]', async () => {
+            const commentLikes:CommentLike[] = [commentLike]
+            when(mockedRepository.find()).thenResolve(commentLikes)
+
+            const result = await commentLikeService.findAll();
+
+            expect(result).toBe(commentLikes)
+            verify(mockedRepository.find()).once()
+        })
+
+    })
+
 })
