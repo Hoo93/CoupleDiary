@@ -1,4 +1,4 @@
-import { instance, mock } from "ts-mockito";
+import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import { BoardService } from "../../../src/Board/BoardService";
 import { BoardLike } from "../../../src/BoardLike/BoardLike";
 import { BoardLikeRepository } from "../../../src/BoardLike/BoardLikeRepository";
@@ -52,4 +52,35 @@ describe('BoardLike Service Test', () => {
             expect(result.updatedAt).toBe(createBoardLikeDto.updatedAt)
         })
     })
+
+    describe('createBoardLike method test', () => {
+        let createBoardLikeDto:CreateBoardLikeDto = new CreateBoardLikeDto();
+        createBoardLikeDto.userId = userId;
+        createBoardLikeDto.boardId = boardId;
+        createBoardLikeDto.createdAt = now;
+        createBoardLikeDto.updatedAt = now;
+
+        it('should be a function', () => {
+            expect(typeof boardLikeService.createBoardLike).toBe('function');
+        })
+
+        it('shoud return boardLike', async () => {
+            when(mockedRepository.save(deepEqual(boardLike))).thenResolve(boardLike)
+            
+            let mockedDto = mock(CreateBoardLikeDto);
+            let dto = instance(mockedDto)
+            when(mockedDto.toEntity()).thenReturn(boardLike)
+
+            const result = await boardLikeService.createBoardLike(dto)
+
+            expect(dto.toEntity()).toBe(boardLike)
+            expect(result).toBe(boardLike)
+            verify(mockedRepository.save(deepEqual(boardLike))).once()
+        })
+    
+    })
+
+    
+
+
 })
