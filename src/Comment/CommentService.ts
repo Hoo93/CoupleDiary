@@ -5,17 +5,18 @@ import { Comment } from "./Comment";
 import { BadRequestError, NotFoundError } from "routing-controllers";
 import { UpdateCommentDto } from "./dto/updateCommentDto";
 import { DeleteResult } from "typeorm";
+import { NoticeRepository } from "../Notice/NoticeRepository";
 
 @Service()
 export class CommentService {
     constructor (
         @Inject()
-        private commentRepository:CommentRepository
+        private commentRepository:CommentRepository,
     ) {}
     
     public async createComment (createCommentDto:CreateCommentDto):Promise<Comment> {
         const comment = createCommentDto.toEntity();
-
+        
         try {
             const result = await this.commentRepository.save(comment)
             return result
