@@ -1,8 +1,8 @@
 import { deepEqual, instance, mock, verify, when } from "ts-mockito";
 import { Board } from "../../../src/Board/Board";
 import { BoardRepository } from "../../../src/Board/BoardRepository";
-import { BoardController } from "../../../src/Board/boardController";
-import { BoardService } from "../../../src/Board/boardService";
+import { BoardController } from "../../../src/Board/BoardController";
+import { BoardService } from "../../../src/Board/BoardService";
 import { CreateBoardDto } from "../../../src/Board/dto/createBoardDto";
 import { BadRequestError, BodyParam, NotFoundError } from "routing-controllers";
 import { UpdateBoardDto } from "../../../src/Board/dto/updateBoardDto";

@@ -1,6 +1,6 @@
 import { instance, mock, verify, when } from "ts-mockito";
-import { BoardController } from "../../../src/Board/boardController";
-import { BoardService } from "../../../src/Board/boardService";
+import { BoardController } from "../../../src/Board/BoardController";
+import { BoardService } from "../../../src/Board/BoardService";
 import { CreateBoardDto } from "../../../src/Board/dto/createBoardDto";
 import { UpdateBoardDto } from "../../../src/Board/dto/updateBoardDto";
 import { deepEqual } from "assert";

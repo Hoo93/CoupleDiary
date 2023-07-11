@@ -1,11 +1,11 @@
 import { Body, Delete, Get, JsonController, Param, Patch, Post, Req } from "routing-controllers";
 import { Inject, Service } from "typedi";
-import { BoardService } from "./boardService";
 import { CreateBoardDto } from "./dto/createBoardDto";
 import { Category } from "../Category/Category";
 import { Board } from "./Board";
 import { UpdateBoardDto } from "./dto/updateBoardDto";
 import { Request } from "express";
+import { BoardService } from "./BoardService";
 
 @JsonController('board')
 @Service()

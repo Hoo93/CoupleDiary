@@ -1,7 +1,8 @@
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 import { BaseTimeEntity } from "../entity/BaseTimeEntity";
 import { User } from "../User/User";
 import { Category } from "../Category/Category";
+import { Comment } from "../Comment/Comment";
 
 @Entity()
 export class Board extends BaseTimeEntity {
@@ -26,6 +27,9 @@ export class Board extends BaseTimeEntity {
 
     @ManyToOne(() => Category,(category) => category.boards)
     category:Category;
+
+    @OneToMany(() => (Comment), (comments) => comments.board,{cascade:true,eager:true})
+    comments:Comment[]
 
     static createBoard (
         userId:number,
