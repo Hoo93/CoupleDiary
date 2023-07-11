@@ -50,4 +50,32 @@ describe('CommentLike Service Test', () => {
             expect(result.updatedAt).toBe(createCommentLikeDto.updatedAt)
         })
     })
+
+    describe('createCommentLike method test', () => {
+        let createCommentLikeDto:CreateCommentLikeDto = new CreateCommentLikeDto();
+        createCommentLikeDto.userId = userId;
+        createCommentLikeDto.commentId = commentId;
+        createCommentLikeDto.createdAt = now;
+        createCommentLikeDto.updatedAt = now;
+
+        it('should be a function', () => {
+            expect(typeof commentLikeService.createCommentLike).toBe('function');
+        })
+
+        it('shoud return commentLike', async () => {
+            when(mockedRepository.save(deepEqual(commentLike))).thenResolve(commentLike)
+            
+            let mockedDto = mock(CreateCommentLikeDto);
+            let dto = instance(mockedDto)
+            when(mockedDto.toEntity()).thenReturn(commentLike)
+
+            const result = await commentLikeService.createCommentLike(dto)
+
+            expect(dto.toEntity()).toBe(commentLike)
+            expect(result).toBe(commentLike)
+            verify(mockedRepository.save(deepEqual(commentLike))).once()
+        })
+    
+    })
+
 })
