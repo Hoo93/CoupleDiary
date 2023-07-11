@@ -1,8 +1,9 @@
-import { Body, Get, JsonController, Param, Post } from "routing-controllers";
+import { Body, Get, JsonController, Param, Patch, Post } from "routing-controllers";
 import { Inject, Service } from "typedi";
 import { CommentService } from "./CommentService";
 import { CreateCommentDto } from "./dto/createCommentDto";
 import { Comment } from "./Comment";
+import { UpdateCommentDto } from "./dto/updateCommentDto";
 
 
 @JsonController('/comment')
@@ -42,6 +43,18 @@ export class CommentController {
             return error.message
         }
     }
+
+    @Patch('/:id')
+    public async updateComment(
+        @Param('/id') id:number,
+        @Body() updateComentDto:UpdateCommentDto) {
+            try {
+                return await this.commentService.updateComment(id,updateComentDto);
+            } catch (error) {
+                console.error("controller error:",error)
+                return error.message
+            }
+        }
 
 
 

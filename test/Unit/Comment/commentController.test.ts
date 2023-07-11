@@ -90,4 +90,22 @@ describe("Comment Controller Test", () => {
         })
 
     })
+
+    describe("updateComment method test", () => {
+
+        it('should have a updateComment function', async () => {        
+            expect(typeof commentController.updateComment).toBe('function')
+        })
+
+        it('should return updateComment comment.id' , async() => {
+            when(mockedService.updateComment(comment.id,updateCommentDto)).thenResolve(comment.id)
+
+            const result = await commentController.updateComment(comment.id,updateCommentDto);
+            
+            verify(mockedService.updateComment(comment.id,updateCommentDto)).once()
+            expect(result).toBe(comment.id)
+        })
+    })
+
+
 })
