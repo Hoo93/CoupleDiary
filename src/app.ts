@@ -11,6 +11,7 @@ import { CommentController } from './Comment/CommentController';
 import { BoardController } from './Board/BoardController';
 import { BoadrLikeController } from './BoardLike/BoardLikeController';
 import { CommentLikeController } from './CommentLike/CommentLikeController';
+import passport from 'passport';
 
 @Service()
 export class App {
@@ -48,7 +49,6 @@ export class App {
     private initializeMiddleWare() {
         this.app.use(express.json())
         this.app.use(loggerMiddleWare)
-
     }
 
     private listen(port:number) {

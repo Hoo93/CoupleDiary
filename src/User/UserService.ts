@@ -4,6 +4,9 @@ import { User } from "./User";
 import { BadRequestError, NotFoundError } from "routing-controllers";
 import { UserRepository } from "./UserRepository";
 import { UpdateUserDto } from "./dto/updateUserDto";
+import * as bcrypt from 'bcrypt';
+
+const saltRounds = 8;
 
 @Service()
 export class UserService {
@@ -14,6 +17,7 @@ export class UserService {
 
     public async createUser (createUserDto:CreateUserDto):Promise<User> {
         const user = createUserDto.toEntity();
+        user.password = await bcrypt.hash(user.password,saltRounds);
 
         if (await this.userRepository.findOneBy({name:user.name})) {
             throw new BadRequestError(`name with ${user.name} already exist`) 
