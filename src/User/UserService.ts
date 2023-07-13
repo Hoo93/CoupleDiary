@@ -15,6 +15,17 @@ export class UserService {
         private userRepository:UserRepository
     ) {}
 
+    public async login (name:string,password:string) {
+        const findUser = await this.userRepository.findOneBy({name});
+
+        if (bcrypt.compare(password,findUser.password)) {
+            console.log("login succes")
+            return "login success"
+        } else {
+            return "login failed"
+        }
+    }
+
     public async createUser (createUserDto:CreateUserDto):Promise<User> {
         const user = createUserDto.toEntity();
         user.password = await bcrypt.hash(user.password,saltRounds);
