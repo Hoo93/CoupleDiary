@@ -14,28 +14,6 @@ export class UserController {
         private userService:UserService
     ) {}
 
-    @Post('/')
-    public async createUser(@Body() createUserDto:CreateUserDto) {
-        try { 
-            return await this.userService.createUser(createUserDto);
-        } catch(error) {
-            console.error(error);
-            return error.message;
-        }
-        
-    }
-
-    @Post('/signin')
-    public async ligin(@Body() createUserDto:CreateUserDto) {
-        try { 
-            return await this.userService.login(createUserDto.name,createUserDto.password);
-        } catch(error) {
-            console.error(error);
-            return error.message;
-        }
-        
-    }
-
     @Get()
     public async findAllUser():Promise<User[]> {
         try {
