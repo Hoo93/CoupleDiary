@@ -4,9 +4,6 @@ import { User } from "./User";
 import { BadRequestError, NotFoundError } from "routing-controllers";
 import { UserRepository } from "./UserRepository";
 import { UpdateUserDto } from "./dto/updateUserDto";
-import * as bcrypt from 'bcrypt';
-
-const saltRounds = 8;
 
 @Service()
 export class UserService {
@@ -15,37 +12,7 @@ export class UserService {
         private userRepository:UserRepository
     ) {}
 
-    public async login (name:string,password:string) {
-        const findUser = await this.userRepository.findOneBy({name});
-
-        if (bcrypt.compare(password,findUser.password)) {
-            console.log("login succes")
-            return "login success"
-        } else {
-            return "login failed"
-        }
-    }
-
-    public async createUser (createUserDto:CreateUserDto):Promise<User> {
-        const user = createUserDto.toEntity();
-        user.password = await bcrypt.hash(user.password,saltRounds);
-
-        if (await this.userRepository.findOneBy({name:user.name})) {
-            throw new BadRequestError(`name with ${user.name} already exist`) 
-           }
-        if (await this.userRepository.findOneBy({nickname:user.nickname})) {
-            throw new BadRequestError(`nickname with ${user.nickname} already exist`) 
-           }   
-        
-        try {
-            const result = await this.userRepository.save(user)
-            return result
-        } catch(error) {
-            console.error("error on save :",error);
-            return error.message;
-        }
-        
-    }
+    
 
     public async findUserById (id:number): Promise<User> {
         const user = await this.userRepository.findOneBy({id})

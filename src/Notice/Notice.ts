@@ -5,22 +5,20 @@ import { Comment } from "../Comment/Comment";
 import { CommentLike } from "../CommentLike/CommentLike";
 import { BoardLike } from "../BoardLike/BoardLike";
 
-
 @Entity()
 export class Notice extends BaseTimeEntity {
+    @Column()
+    sendUserId: number;
 
     @Column()
-    sendUserId:number;
+    receiveUserId: number;
 
     @Column()
-    receiveUserId:number;
+    noticeType: Comment | CommentLike | BoardLike;
+
+    @Column({ default: true })
+    isRead: boolean;
 
     @Column()
-    noticeType:Comment|CommentLike|BoardLike;
-
-    @Column()
-    readAt:Date;
-
-    @Column({default:true})
-    isRead:boolean;
+    readAt: Date;
 }

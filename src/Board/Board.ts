@@ -7,50 +7,58 @@ import { BoardLike } from "../BoardLike/BoardLike";
 
 @Entity()
 export class Board extends BaseTimeEntity {
+    @Column()
+    userId: number;
 
     @Column()
-    userId:number;
+    categoryId: number;
 
     @Column()
-    categoryId:number;
+    title: string;
 
     @Column()
-    title:string;
+    content: string;
 
     @Column()
-    content:string;
+    grade: string;
 
-    @Column({default:true})
-    isPublic:Boolean;
+    @Column({ default: true })
+    isPublic: Boolean;
 
     @ManyToOne(() => User, (user) => user.boards)
-    user:User;
+    user: User;
 
-    @ManyToOne(() => Category,(category) => category.boards)
-    category:Category;
+    @ManyToOne(() => Category, (category) => category.boards)
+    category: Category;
 
-    @OneToMany(() => (Comment), (comments) => comments.board,{cascade:true,eager:true})
-    comments:Comment[]
+    @OneToMany(() => Comment, (comments) => comments.board, {
+        cascade: true,
+        eager: true,
+    })
+    comments: Comment[];
 
-    @OneToMany(() => (BoardLike), (boardLikes) => boardLikes.board,{cascade:true,eager:true})
-    boardLikes:BoardLike[]
+    @OneToMany(() => BoardLike, (boardLikes) => boardLikes.board, {
+        cascade: true,
+        eager: true,
+    })
+    boardLikes: BoardLike[];
 
-    static createBoard (
-        userId:number,
-        categoryId:number,
-        title:string,
-        content:string,
-        isPublic:boolean,
-        now:Date):Board {
-            const board = new Board();
-            board.userId = userId,
-            board.categoryId = categoryId;
-            board.title = title;
-            board.content = content;
-            board.isPublic = isPublic;
-            board.createdAt = now;
-            board.updatedAt = now;
-            return board
+    static createBoard(
+        userId: number,
+        categoryId: number,
+        title: string,
+        content: string,
+        isPublic: boolean,
+        now: Date,
+    ): Board {
+        const board = new Board();
+        (board.userId = userId), (board.categoryId = categoryId);
+        board.title = title;
+        board.content = content;
+        board.isPublic = isPublic;
+        board.createdAt = now;
+        board.updatedAt = now;
+        return board;
     }
 
     setPublic(): void {
@@ -60,8 +68,4 @@ export class Board extends BaseTimeEntity {
     setPrivate(): void {
         this.isPublic = false;
     }
-
-    
-
-
 }

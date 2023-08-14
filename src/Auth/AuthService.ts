@@ -4,6 +4,8 @@ import * as bcrypt from 'bcrypt';
 import { User } from "../User/User";
 import { CreateUserDto } from "../User/dto/createUserDto";
 import { BadRequestError } from "routing-controllers";
+import { JsonWebTokenError } from "jsonwebtoken";
+import { generateToken } from "../middleware/jwt";
 
 const saltRounds = 8;
 
@@ -16,11 +18,12 @@ export class AuthService {
 
     public async login (name:string,password:string) {
         const findUser = await this.userRepository.findOneBy({name});
-
+        
         if (bcrypt.compare(password,findUser.password)) {
             console.log("login succes")
-            return "login success"
+            return generateToken(name)
         } else {
+            console.log("login fail")
             return "login failed"
         }
     }

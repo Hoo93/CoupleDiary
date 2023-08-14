@@ -22,7 +22,7 @@ export class AuthController {
     }
 
     @Post('/signin')
-    public async ligin(@Body() createUserDto:CreateUserDto) {
+    public async login(@Body() createUserDto:CreateUserDto) {
         try { 
             return await this.authService.login(createUserDto.name,createUserDto.password);
         } catch(error) {
